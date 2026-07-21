@@ -32,17 +32,20 @@
 }
 
 .card {
-  background-color: var(--surface-color);
-  border-radius: 16px;
+  background: var(--surface-color);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 24px;
   padding: 1.5rem;
   border: 1px solid var(--border-color);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  border-color: var(--border-glow);
 }
 
 .cardTitle {
@@ -77,10 +80,13 @@
 }
 
 .formSection {
-  background-color: var(--surface-color);
-  border-radius: 16px;
-  padding: 1.5rem;
+  background: var(--surface-color);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 24px;
+  padding: 2rem;
   border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .formSection h2 {
@@ -102,40 +108,48 @@
 
 .input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  background-color: var(--bg-color);
+  padding: 0.85rem 1.2rem;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-color);
   color: var(--text-main);
   font-size: 1rem;
-  transition: border-color 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .input:focus {
   border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 .button {
   width: 100%;
-  padding: 0.75rem;
-  border-radius: 8px;
+  padding: 0.85rem;
+  border-radius: 12px;
   background: var(--gradient-primary);
   color: white;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
 }
 
 .button:hover {
-  opacity: 0.9;
-  transform: scale(1.02);
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
 }
 
 .expensesSection {
-  background-color: var(--surface-color);
-  border-radius: 16px;
-  padding: 1.5rem;
+  background: var(--surface-color);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 24px;
+  padding: 2rem;
   border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .expensesSection h2 {
@@ -154,16 +168,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  background-color: var(--bg-color);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  transition: transform 0.2s ease;
+  padding: 1.2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
 }
 
 .expenseItem:hover {
-  transform: translateX(5px);
-  border-color: var(--primary-color);
+  transform: translateX(8px);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-glow);
+  box-shadow: -5px 5px 15px rgba(0,0,0,0.1);
 }
 
 .expenseInfo {
