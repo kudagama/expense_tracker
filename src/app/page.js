@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import Swal from 'sweetalert2';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -46,10 +48,13 @@ export default function Home() {
         body: JSON.stringify({ month: currentMonth, salary: Number(salaryInput) })
       });
       if (res.ok) {
+        toast.success('Salary updated successfully!');
         fetchData();
+      } else {
+        toast.error('Failed to update salary');
       }
     } catch (error) {
-      console.error('Error updating salary:', error);
+      toast.error('An error occurred');
     }
   };
 
@@ -67,26 +72,47 @@ export default function Home() {
         })
       });
       if (res.ok) {
+        toast.success('Expense added!');
         setExpenseAmount('');
         setExpenseDesc('');
         fetchData();
+      } else {
+        toast.error('Failed to add expense');
       }
     } catch (error) {
-      console.error('Error adding expense:', error);
+      toast.error('An error occurred');
     }
   };
 
   const handleDeleteExpense = async (expenseId) => {
-    if (!confirm('Are you sure you want to delete this expense?')) return;
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#334155',
+      confirmButtonText: 'Yes, delete it!',
+      background: '#1e293b',
+      color: '#f8fafc'
+    });
+
+    if (!result.isConfirmed) return;
+
     try {
       const res = await fetch('/api/expenses', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ month: currentMonth, expenseId })
       });
-      if (res.ok) fetchData();
+      if (res.ok) {
+        toast.success('Expense deleted!');
+        fetchData();
+      } else {
+        toast.error('Failed to delete expense');
+      }
     } catch (error) {
-      console.error('Error deleting expense:', error);
+      toast.error('An error occurred');
     }
   };
 
@@ -110,11 +136,14 @@ export default function Home() {
         })
       });
       if (res.ok) {
+        toast.success('Expense updated!');
         setEditingId(null);
         fetchData();
+      } else {
+        toast.error('Failed to update expense');
       }
     } catch (error) {
-      console.error('Error updating expense:', error);
+      toast.error('An error occurred');
     }
   };
 
@@ -142,6 +171,9 @@ export default function Home() {
 
   return (
     <main className={`${styles.container} animate-fade-in`}>
+      <Toaster position="top-right" toastOptions={{
+        style: { background: '#1e293b', color: '#f8fafc', border: '1px solid #334155' }
+      }} />
       <header className={styles.header}>
         <h1 className={styles.title}>Expense Tracker</h1>
         <p className={styles.subtitle}>{monthName} Overview</p>
