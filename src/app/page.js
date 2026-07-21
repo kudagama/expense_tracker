@@ -9,6 +9,7 @@ export default function Home() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [salaryInput, setSalaryInput] = useState('');
+  const [salaryDateInput, setSalaryDateInput] = useState('');
   const [expenseAmount, setExpenseAmount] = useState('');
   const [expenseDesc, setExpenseDesc] = useState('');
 
@@ -29,6 +30,7 @@ export default function Home() {
         const json = await res.json();
         setData(json);
         setSalaryInput(json.salary || '');
+        setSalaryDateInput(json.salaryDate || '');
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -49,7 +51,7 @@ export default function Home() {
       const res = await fetch('/api/month', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ month: selectedMonth, salary: Number(salaryInput) })
+        body: JSON.stringify({ month: selectedMonth, salary: Number(salaryInput), salaryDate: salaryDateInput })
       });
       if (res.ok) {
         toast.success('Salary updated successfully!');
@@ -202,21 +204,39 @@ export default function Home() {
             )}
           </div>
           {isEditingSalary ? (
-            <form onSubmit={handleUpdateSalary} style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+            <form onSubmit={handleUpdateSalary} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
               <input
                 type="number"
                 className={styles.input}
                 value={salaryInput}
                 onChange={(e) => setSalaryInput(e.target.value)}
                 style={{ padding: '0.4rem', fontSize: '1.2rem', width: '100%' }}
+                placeholder="Amount"
                 autoFocus
                 required
               />
-              <button type="submit" className={styles.saveBtn} style={{ padding: '0.4rem 0.8rem' }}>Save</button>
-              <button type="button" onClick={() => setIsEditingSalary(false)} className={styles.cancelBtn} style={{ padding: '0.4rem 0.8rem' }}>X</button>
+              <input
+                type="date"
+                className={styles.input}
+                value={salaryDateInput}
+                onChange={(e) => setSalaryDateInput(e.target.value)}
+                style={{ padding: '0.4rem', width: '100%', colorScheme: 'dark' }}
+                title="Select Salary Date"
+              />
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button type="submit" className={styles.saveBtn} style={{ flex: 1, padding: '0.4rem' }}>Save</button>
+                <button type="button" onClick={() => setIsEditingSalary(false)} className={styles.cancelBtn} style={{ flex: 1, padding: '0.4rem' }}>Cancel</button>
+              </div>
             </form>
           ) : (
-            <div className={`${styles.cardValue} ${styles.primary}`}>Rs. {salary.toLocaleString()}</div>
+            <div>
+              <div className={`${styles.cardValue} ${styles.primary}`}>Rs. {salary.toLocaleString()}</div>
+              {data?.salaryDate && (
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                  Received on: {new Date(data.salaryDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </div>
+              )}
+            </div>
           )}
         </div>
         <div className={styles.card}>

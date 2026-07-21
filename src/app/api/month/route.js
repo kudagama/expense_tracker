@@ -30,7 +30,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { month, salary } = body;
+    const { month, salary, salaryDate } = body;
 
     if (!month || salary === undefined) {
       return NextResponse.json({ error: 'Month and salary are required' }, { status: 400 });
@@ -40,9 +40,12 @@ export async function POST(request) {
 
     let monthData = await MonthData.findOne({ month });
     if (!monthData) {
-      monthData = new MonthData({ month, salary, expenses: [] });
+      monthData = new MonthData({ month, salary, salaryDate: salaryDate || null, expenses: [] });
     } else {
       monthData.salary = salary;
+      if (salaryDate !== undefined) {
+        monthData.salaryDate = salaryDate;
+      }
     }
     
     await monthData.save();

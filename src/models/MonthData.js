@@ -25,6 +25,10 @@ const MonthDataSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  salaryDate: {
+    type: String, // Format: YYYY-MM-DD
+    default: null
+  },
   expenses: [ExpenseSchema]
 }, { timestamps: true });
 
