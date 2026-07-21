@@ -16,12 +16,15 @@ export default function Home() {
   const [editDesc, setEditDesc] = useState('');
   const [editAmount, setEditAmount] = useState('');
 
-  const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
-  const monthName = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM
+  const [isEditingSalary, setIsEditingSalary] = useState(false);
+
+  const [yearStr, monthStr] = selectedMonth.split('-');
+  const monthName = new Date(yearStr, monthStr - 1).toLocaleString('default', { month: 'long', year: 'numeric' });
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`/api/month?month=${currentMonth}`, { cache: 'no-store' });
+      const res = await fetch(`/api/month?month=${selectedMonth}`, { cache: 'no-store' });
       if (res.ok) {
         const json = await res.json();
         setData(json);
@@ -35,8 +38,9 @@ export default function Home() {
   };
 
   useEffect(() => {
+    setLoading(true);
     fetchData();
-  }, []);
+  }, [selectedMonth]);
 
   const handleUpdateSalary = async (e) => {
     e.preventDefault();
@@ -45,10 +49,11 @@ export default function Home() {
       const res = await fetch('/api/month', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ month: currentMonth, salary: Number(salaryInput) })
+        body: JSON.stringify({ month: selectedMonth, salary: Number(salaryInput) })
       });
       if (res.ok) {
         toast.success('Salary updated successfully!');
+        setIsEditingSalary(false);
         fetchData();
       } else {
         toast.error('Failed to update salary');
@@ -66,7 +71,7 @@ export default function Home() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          month: currentMonth,
+          month: selectedMonth,
           amount: expenseAmount,
           description: expenseDesc
         })
@@ -103,7 +108,7 @@ export default function Home() {
       const res = await fetch('/api/expenses', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ month: currentMonth, expenseId })
+        body: JSON.stringify({ month: selectedMonth, expenseId })
       });
       if (res.ok) {
         toast.success('Expense deleted!');
@@ -129,7 +134,7 @@ export default function Home() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          month: currentMonth,
+          month: selectedMonth,
           expenseId,
           description: editDesc,
           amount: editAmount
@@ -176,13 +181,43 @@ export default function Home() {
       }} />
       <header className={styles.header}>
         <h1 className={styles.title}>Expense Tracker</h1>
-        <p className={styles.subtitle}>{monthName} Overview</p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+          <p className={styles.subtitle} style={{ margin: 0 }}>{monthName} Overview</p>
+          <input 
+            type="month" 
+            value={selectedMonth} 
+            onChange={(e) => setSelectedMonth(e.target.value)} 
+            className={styles.input} 
+            style={{ width: 'auto', padding: '0.4rem 0.8rem', backgroundColor: 'var(--surface-color)', cursor: 'pointer' }} 
+          />
+        </div>
       </header>
 
       <div className={styles.grid}>
-        <div className={styles.card}>
-          <div className={styles.cardTitle}>Monthly Salary</div>
-          <div className={`${styles.cardValue} ${styles.primary}`}>Rs. {salary.toLocaleString()}</div>
+        <div className={styles.card} style={{ position: 'relative' }}>
+          <div className={styles.cardTitle} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>Monthly Salary</span>
+            {!isEditingSalary && (
+              <button onClick={() => setIsEditingSalary(true)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: 'var(--primary-color)' }}>✏️</button>
+            )}
+          </div>
+          {isEditingSalary ? (
+            <form onSubmit={handleUpdateSalary} style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+              <input
+                type="number"
+                className={styles.input}
+                value={salaryInput}
+                onChange={(e) => setSalaryInput(e.target.value)}
+                style={{ padding: '0.4rem', fontSize: '1.2rem', width: '100%' }}
+                autoFocus
+                required
+              />
+              <button type="submit" className={styles.saveBtn} style={{ padding: '0.4rem 0.8rem' }}>Save</button>
+              <button type="button" onClick={() => setIsEditingSalary(false)} className={styles.cancelBtn} style={{ padding: '0.4rem 0.8rem' }}>X</button>
+            </form>
+          ) : (
+            <div className={`${styles.cardValue} ${styles.primary}`}>Rs. {salary.toLocaleString()}</div>
+          )}
         </div>
         <div className={styles.card}>
           <div className={styles.cardTitle}>Total Expenses</div>
@@ -200,24 +235,6 @@ export default function Home() {
 
       <div className={styles.mainContent}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-          <section className={styles.formSection}>
-            <h2>Update Salary</h2>
-            <form onSubmit={handleUpdateSalary}>
-              <div className={styles.formGroup}>
-                <label>Salary Amount (Rs.)</label>
-                <input
-                  type="number"
-                  className={styles.input}
-                  value={salaryInput}
-                  onChange={(e) => setSalaryInput(e.target.value)}
-                  placeholder="Enter your monthly salary"
-                  required
-                />
-              </div>
-              <button type="submit" className={styles.button}>Save Salary</button>
-            </form>
-          </section>
-
           <section className={styles.formSection}>
             <h2>Add New Expense</h2>
             <form onSubmit={handleAddExpense}>
