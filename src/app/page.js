@@ -92,7 +92,7 @@ export default function Home() {
   const currentDay = today.getDate();
   const remainingDays = daysInMonth - currentDay + 1; // including today
 
-  const dailyLimit = remainingDays > 0 ? (remainingSalary / remainingDays) : remainingSalary;
+  const dailyLimit = remainingSalary / daysInMonth;
 
   return (
     <main className={`${styles.container} animate-fade-in`}>
@@ -115,7 +115,7 @@ export default function Home() {
           <div className={`${styles.cardValue} ${styles.success}`}>Rs. {remainingSalary.toLocaleString()}</div>
         </div>
         <div className={styles.card}>
-          <div className={styles.cardTitle}>Daily Spend Limit ({remainingDays} Days)</div>
+          <div className={styles.cardTitle}>Daily Budget ({daysInMonth} Days)</div>
           <div className={`${styles.cardValue} ${styles.warning}`}>Rs. {dailyLimit.toFixed(2)}</div>
         </div>
       </div>

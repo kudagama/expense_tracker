@@ -19,8 +19,7 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   const server = express();
 
-  // You can add global Express middleware here (like body-parser, cors, etc.)
-  server.use(express.json());
+  // Next.js parses the body itself, so we don't use express.json() globally
 
   // Pass all API and page requests to the Next.js handler
   server.use((req, res) => {
