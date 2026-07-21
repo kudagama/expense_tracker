@@ -15,7 +15,7 @@ export default function Home() {
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`/api/month?month=${currentMonth}`);
+      const res = await fetch(`/api/month?month=${currentMonth}`, { cache: 'no-store' });
       if (res.ok) {
         const json = await res.json();
         setData(json);
