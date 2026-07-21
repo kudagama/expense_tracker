@@ -223,7 +223,7 @@ export default function Home() {
               data.expenses.slice().reverse().map((expense) => (
                 <div key={expense._id} className={styles.expenseItem}>
                   {editingId === expense._id ? (
-                    <div style={{ display: 'flex', gap: '1rem', width: '100%', alignItems: 'center' }}>
+                    <div className={styles.editForm}>
                       <input 
                         className={styles.input} 
                         value={editDesc} 
@@ -237,9 +237,9 @@ export default function Home() {
                         onChange={(e) => setEditAmount(e.target.value)} 
                         placeholder="Amount"
                       />
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button onClick={() => handleEditSubmit(expense._id)} style={{ padding: '0.5rem', background: 'var(--success-color)', color: 'white', borderRadius: '4px', cursor: 'pointer' }}>Save</button>
-                        <button onClick={() => setEditingId(null)} style={{ padding: '0.5rem', background: 'var(--border-color)', color: 'white', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
+                      <div className={styles.editActions}>
+                        <button className={styles.saveBtn} onClick={() => handleEditSubmit(expense._id)}>Save</button>
+                        <button className={styles.cancelBtn} onClick={() => setEditingId(null)}>Cancel</button>
                       </div>
                     </div>
                   ) : (
@@ -252,13 +252,13 @@ export default function Home() {
                           })}
                         </span>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <div className={styles.expenseRightContent}>
                         <div className={styles.expenseAmount}>
                           -Rs. {expense.amount.toLocaleString()}
                         </div>
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                          <button onClick={() => handleEditClick(expense)} style={{ padding: '0.3rem', background: 'transparent', color: 'var(--primary-color)', cursor: 'pointer', border: 'none', fontSize: '1.2rem' }}>✏️</button>
-                          <button onClick={() => handleDeleteExpense(expense._id)} style={{ padding: '0.3rem', background: 'transparent', color: 'var(--danger-color)', cursor: 'pointer', border: 'none', fontSize: '1.2rem' }}>🗑️</button>
+                        <div className={styles.actionButtons}>
+                          <button className={styles.iconBtn} onClick={() => handleEditClick(expense)}>✏️</button>
+                          <button className={styles.iconBtn} onClick={() => handleDeleteExpense(expense._id)}>🗑️</button>
                         </div>
                       </div>
                     </>

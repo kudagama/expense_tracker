@@ -194,3 +194,100 @@
   font-size: 1.2rem;
   color: var(--text-muted);
 }
+
+/* Edit and Actions */
+.editForm {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  align-items: center;
+}
+
+.editActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.saveBtn {
+  padding: 0.5rem 1rem;
+  background: var(--success-color);
+  color: white;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.cancelBtn {
+  padding: 0.5rem 1rem;
+  background: var(--surface-hover);
+  color: white;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.expenseRightContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.iconBtn {
+  padding: 0.4rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+/* SUPERB MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .expenseItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+  
+  .expenseRightContent {
+    width: 100%;
+    justify-content: space-between;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+  }
+  
+  .editForm {
+    flex-direction: column;
+  }
+  
+  .editActions {
+    width: 100%;
+  }
+  
+  .saveBtn, .cancelBtn {
+    flex: 1;
+  }
+}
