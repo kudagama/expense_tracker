@@ -10,6 +10,10 @@ export default function Home() {
   const [expenseAmount, setExpenseAmount] = useState('');
   const [expenseDesc, setExpenseDesc] = useState('');
 
+  const [editingId, setEditingId] = useState(null);
+  const [editDesc, setEditDesc] = useState('');
+  const [editAmount, setEditAmount] = useState('');
+
   const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
   const monthName = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
 
@@ -69,6 +73,48 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error adding expense:', error);
+    }
+  };
+
+  const handleDeleteExpense = async (expenseId) => {
+    if (!confirm('Are you sure you want to delete this expense?')) return;
+    try {
+      const res = await fetch('/api/expenses', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ month: currentMonth, expenseId })
+      });
+      if (res.ok) fetchData();
+    } catch (error) {
+      console.error('Error deleting expense:', error);
+    }
+  };
+
+  const handleEditClick = (expense) => {
+    setEditingId(expense._id);
+    setEditDesc(expense.description);
+    setEditAmount(expense.amount);
+  };
+
+  const handleEditSubmit = async (expenseId) => {
+    if (!editDesc || !editAmount) return;
+    try {
+      const res = await fetch('/api/expenses', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          month: currentMonth,
+          expenseId,
+          description: editDesc,
+          amount: editAmount
+        })
+      });
+      if (res.ok) {
+        setEditingId(null);
+        fetchData();
+      }
+    } catch (error) {
+      console.error('Error updating expense:', error);
     }
   };
 
@@ -174,19 +220,49 @@ export default function Home() {
           <h2>Recent Expenses</h2>
           <div className={styles.expenseList}>
             {data?.expenses?.length > 0 ? (
-              data.expenses.slice().reverse().map((expense, i) => (
-                <div key={i} className={styles.expenseItem}>
-                  <div className={styles.expenseInfo}>
-                    <span className={styles.expenseDesc}>{expense.description}</span>
-                    <span className={styles.expenseDate}>
-                      {new Date(expense.date).toLocaleDateString('en-US', { 
-                        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-                      })}
-                    </span>
-                  </div>
-                  <div className={styles.expenseAmount}>
-                    -Rs. {expense.amount.toLocaleString()}
-                  </div>
+              data.expenses.slice().reverse().map((expense) => (
+                <div key={expense._id} className={styles.expenseItem}>
+                  {editingId === expense._id ? (
+                    <div style={{ display: 'flex', gap: '1rem', width: '100%', alignItems: 'center' }}>
+                      <input 
+                        className={styles.input} 
+                        value={editDesc} 
+                        onChange={(e) => setEditDesc(e.target.value)} 
+                        placeholder="Description"
+                      />
+                      <input 
+                        className={styles.input} 
+                        type="number"
+                        value={editAmount} 
+                        onChange={(e) => setEditAmount(e.target.value)} 
+                        placeholder="Amount"
+                      />
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button onClick={() => handleEditSubmit(expense._id)} style={{ padding: '0.5rem', background: 'var(--success-color)', color: 'white', borderRadius: '4px', cursor: 'pointer' }}>Save</button>
+                        <button onClick={() => setEditingId(null)} style={{ padding: '0.5rem', background: 'var(--border-color)', color: 'white', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className={styles.expenseInfo}>
+                        <span className={styles.expenseDesc}>{expense.description}</span>
+                        <span className={styles.expenseDate}>
+                          {new Date(expense.date).toLocaleDateString('en-US', { 
+                            month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+                          })}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div className={styles.expenseAmount}>
+                          -Rs. {expense.amount.toLocaleString()}
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button onClick={() => handleEditClick(expense)} style={{ padding: '0.3rem', background: 'transparent', color: 'var(--primary-color)', cursor: 'pointer', border: 'none', fontSize: '1.2rem' }}>✏️</button>
+                          <button onClick={() => handleDeleteExpense(expense._id)} style={{ padding: '0.3rem', background: 'transparent', color: 'var(--danger-color)', cursor: 'pointer', border: 'none', fontSize: '1.2rem' }}>🗑️</button>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))
             ) : (
