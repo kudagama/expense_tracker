@@ -1,0 +1,196 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.card {
+  background-color: var(--surface-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.cardTitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cardValue {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.cardValue.primary { color: var(--primary-color); }
+.cardValue.success { color: var(--success-color); }
+.cardValue.danger { color: var(--danger-color); }
+.cardValue.warning { color: #f59e0b; }
+
+.mainContent {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formSection {
+  background-color: var(--surface-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.formSection h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  border-color: var(--primary-color);
+}
+
+.button {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: var(--gradient-primary);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.button:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+.expensesSection {
+  background-color: var(--surface-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.expensesSection h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.expenseList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.expenseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--bg-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease;
+}
+
+.expenseItem:hover {
+  transform: translateX(5px);
+  border-color: var(--primary-color);
+}
+
+.expenseInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.expenseDesc {
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.expenseDate {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.expenseAmount {
+  font-weight: 600;
+  color: var(--danger-color);
+  font-size: 1.2rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
