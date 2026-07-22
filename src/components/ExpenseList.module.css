@@ -203,4 +203,9 @@
   .saveBtn, .cancelBtn {
     flex: 1;
   }
+  
+  .expensesSection {
+    padding: 1.5rem;
+  }
 }
+

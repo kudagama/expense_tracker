@@ -108,3 +108,13 @@
 .link:hover {
   color: #60a5fa;
 }
+
+@media (max-width: 480px) {
+  .card {
+    padding: 2rem 1.5rem;
+  }
+  .title {
+    font-size: 1.8rem;
+  }
+}
+

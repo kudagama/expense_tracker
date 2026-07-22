@@ -87,3 +87,10 @@
 .button:active {
   transform: translateY(1px);
 }
+
+@media (max-width: 768px) {
+  .formSection {
+    padding: 1.5rem;
+  }
+}
+
