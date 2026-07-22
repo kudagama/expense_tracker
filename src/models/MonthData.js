@@ -16,10 +16,14 @@ const ExpenseSchema = new mongoose.Schema({
 });
 
 const MonthDataSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   month: {
     type: String, // format: YYYY-MM
-    required: true,
-    unique: true
+    required: true
   },
   salary: {
     type: Number,
@@ -31,5 +35,7 @@ const MonthDataSchema = new mongoose.Schema({
   },
   expenses: [ExpenseSchema]
 }, { timestamps: true });
+
+MonthDataSchema.index({ userId: 1, month: 1 }, { unique: true });
 
 export default mongoose.models.MonthData || mongoose.model('MonthData', MonthDataSchema);

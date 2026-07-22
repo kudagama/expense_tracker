@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import MonthData from '@/models/MonthData';
+import { getAuthUser } from '@/lib/auth';
 
 export async function POST(request) {
   try {
+    const user = await getAuthUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
     const body = await request.json();
     const { month, amount, description } = body;
 
@@ -13,9 +17,9 @@ export async function POST(request) {
 
     await dbConnect();
 
-    let monthData = await MonthData.findOne({ month });
+    let monthData = await MonthData.findOne({ month, userId: user.userId });
     if (!monthData) {
-      monthData = new MonthData({ month, salary: 0, expenses: [] });
+      monthData = new MonthData({ month, userId: user.userId, salary: 0, expenses: [] });
     }
 
     monthData.expenses.push({
@@ -35,6 +39,9 @@ export async function POST(request) {
 
 export async function PUT(request) {
   try {
+    const user = await getAuthUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
     const body = await request.json();
     const { month, expenseId, amount, description } = body;
 
@@ -44,7 +51,7 @@ export async function PUT(request) {
 
     await dbConnect();
 
-    const monthData = await MonthData.findOne({ month });
+    const monthData = await MonthData.findOne({ month, userId: user.userId });
     if (!monthData) {
       return NextResponse.json({ error: 'Month not found' }, { status: 404 });
     }
@@ -68,6 +75,9 @@ export async function PUT(request) {
 
 export async function DELETE(request) {
   try {
+    const user = await getAuthUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
     const body = await request.json();
     const { month, expenseId } = body;
 
@@ -77,7 +87,7 @@ export async function DELETE(request) {
 
     await dbConnect();
 
-    const monthData = await MonthData.findOne({ month });
+    const monthData = await MonthData.findOne({ month, userId: user.userId });
     if (!monthData) {
       return NextResponse.json({ error: 'Month not found' }, { status: 404 });
     }

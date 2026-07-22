@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import MonthData from '@/models/MonthData';
+import { getAuthUser } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
   try {
+    const user = await getAuthUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
     const { searchParams } = new URL(request.url);
     const month = searchParams.get('month');
 
@@ -15,9 +19,9 @@ export async function GET(request) {
 
     await dbConnect();
 
-    let monthData = await MonthData.findOne({ month });
+    let monthData = await MonthData.findOne({ month, userId: user.userId });
     if (!monthData) {
-      monthData = await MonthData.create({ month, salary: 0, expenses: [] });
+      monthData = await MonthData.create({ month, userId: user.userId, salary: 0, expenses: [] });
     }
 
     return NextResponse.json(monthData);
@@ -29,6 +33,9 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
+    const user = await getAuthUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
     const body = await request.json();
     const { month, salary, salaryDate } = body;
 
@@ -38,9 +45,9 @@ export async function POST(request) {
 
     await dbConnect();
 
-    let monthData = await MonthData.findOne({ month });
+    let monthData = await MonthData.findOne({ month, userId: user.userId });
     if (!monthData) {
-      monthData = new MonthData({ month, salary, salaryDate: salaryDate || null, expenses: [] });
+      monthData = new MonthData({ month, userId: user.userId, salary, salaryDate: salaryDate || null, expenses: [] });
     } else {
       monthData.salary = salary;
       if (salaryDate !== undefined) {
