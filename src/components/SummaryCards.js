@@ -52,13 +52,7 @@ export default function SummaryCards({ data, updateSalary }) {
               autoFocus
               required
             />
-            <input
-              type="date"
-              className={styles.inputDate}
-              value={salaryDateInput}
-              onChange={(e) => setSalaryDateInput(e.target.value)}
-              title="Select Salary Date"
-            />
+
             <div className={styles.actions}>
               <button type="submit" className={styles.saveBtn}>Save</button>
               <button type="button" onClick={() => setIsEditingSalary(false)} className={styles.cancelBtn}>Cancel</button>
@@ -67,11 +61,7 @@ export default function SummaryCards({ data, updateSalary }) {
         ) : (
           <div>
             <div className={`${styles.cardValue} ${styles.primary}`}>Rs. {salary.toLocaleString()}</div>
-            {data?.salaryDate && (
-              <div className={styles.dateSubtext}>
-                Received on: {new Date(data.salaryDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
-              </div>
-            )}
+
           </div>
         )}
       </div>

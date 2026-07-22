@@ -7,8 +7,8 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
   try {
-    const user = await getAuthUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const authUser = await getAuthUser();
+    if (!authUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { searchParams } = new URL(request.url);
     const month = searchParams.get('month');
@@ -19,9 +19,21 @@ export async function GET(request) {
 
     await dbConnect();
 
-    let monthData = await MonthData.findOne({ month, userId: user.userId });
+    let monthData = await MonthData.findOne({ month, userId: authUser.userId });
     if (!monthData) {
-      monthData = await MonthData.create({ month, userId: user.userId, salary: 0, expenses: [] });
+      // Fetch the full user to get their defaults
+      const User = require('@/models/User').default;
+      const userDoc = await User.findById(authUser.userId);
+      const defaultSal = userDoc?.defaultSalary || 0;
+      const defaultSalDate = userDoc?.defaultSalaryDate || null;
+      
+      monthData = await MonthData.create({ 
+        month, 
+        userId: authUser.userId, 
+        salary: defaultSal, 
+        salaryDate: defaultSalDate,
+        expenses: [] 
+      });
     }
 
     return NextResponse.json(monthData);

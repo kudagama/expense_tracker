@@ -14,6 +14,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  defaultSalary: {
+    type: Number,
+    default: 0,
+  },
+  defaultSalaryDate: {
+    type: String,
+    default: null,
+  },
 }, { timestamps: true });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);
