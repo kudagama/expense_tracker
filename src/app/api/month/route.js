@@ -31,6 +31,7 @@ export async function GET(request) {
         month, 
         userId: authUser.userId, 
         salary: defaultSal, 
+        expectedSalary: defaultSal,
         salaryDate: defaultSalDate,
         expenses: [] 
       });

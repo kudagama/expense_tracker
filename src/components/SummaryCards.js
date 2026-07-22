@@ -32,11 +32,29 @@ export default function SummaryCards({ data, updateSalary }) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const dailyLimit = remainingSalary / daysInMonth;
 
+  const expectedSalary = data?.expectedSalary || 0;
+  const variance = salary - expectedSalary;
+  
+  let varianceClass = '';
+  let varianceText = '';
+  if (expectedSalary > 0) {
+    if (variance > 0) {
+      varianceClass = styles.variancePositive;
+      varianceText = `+ Rs. ${variance.toLocaleString()} (Bonus)`;
+    } else if (variance < 0) {
+      varianceClass = styles.varianceNegative;
+      varianceText = `- Rs. ${Math.abs(variance).toLocaleString()} (Shortfall)`;
+    } else {
+      varianceClass = styles.varianceNeutral;
+      varianceText = `Matches expected`;
+    }
+  }
+
   return (
     <div className={styles.grid}>
       <div className={styles.card}>
         <div className={styles.cardTitle}>
-          <span>Monthly Salary</span>
+          <span>Actual Salary</span>
           {!isEditingSalary && (
             <button onClick={() => setIsEditingSalary(true)} className={styles.editBtn}>✏️</button>
           )}
@@ -61,7 +79,12 @@ export default function SummaryCards({ data, updateSalary }) {
         ) : (
           <div>
             <div className={`${styles.cardValue} ${styles.primary}`}>Rs. {salary.toLocaleString()}</div>
-
+            
+            {expectedSalary > 0 && (
+              <div className={`${styles.varianceBadge} ${varianceClass}`}>
+                {varianceText}
+              </div>
+            )}
           </div>
         )}
       </div>

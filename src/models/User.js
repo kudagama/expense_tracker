@@ -24,4 +24,9 @@ const UserSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
-export default mongoose.models.User || mongoose.model('User', UserSchema);
+// Force Mongoose to recompile the schema in development mode
+if (mongoose.models.User) {
+  delete mongoose.models.User;
+}
+
+export default mongoose.model('User', UserSchema);

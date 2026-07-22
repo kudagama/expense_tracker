@@ -29,6 +29,10 @@ const MonthDataSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  expectedSalary: {
+    type: Number,
+    default: 0
+  },
   salaryDate: {
     type: String, // Format: YYYY-MM-DD
     default: null
@@ -38,4 +42,8 @@ const MonthDataSchema = new mongoose.Schema({
 
 MonthDataSchema.index({ userId: 1, month: 1 }, { unique: true });
 
-export default mongoose.models.MonthData || mongoose.model('MonthData', MonthDataSchema);
+if (mongoose.models.MonthData) {
+  delete mongoose.models.MonthData;
+}
+
+export default mongoose.model('MonthData', MonthDataSchema);
