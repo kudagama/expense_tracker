@@ -7,6 +7,8 @@ import Header from '../components/Header';
 import SummaryCards from '../components/SummaryCards';
 import ExpenseForm from '../components/ExpenseForm';
 import ExpenseList from '../components/ExpenseList';
+import IncomeForm from '../components/IncomeForm';
+import IncomeList from '../components/IncomeList';
 
 export default function Home() {
   const {
@@ -17,7 +19,10 @@ export default function Home() {
     updateSalary,
     addExpense,
     deleteExpense,
-    updateExpense
+    updateExpense,
+    addIncome,
+    deleteIncome,
+    updateIncome
   } = useExpenses();
 
   if (loading && !data) {
@@ -41,19 +46,28 @@ export default function Home() {
 
       <SummaryCards 
         data={data} 
-        updateSalary={updateSalary} 
+        updateSalary={updateSalary}
+        selectedMonth={selectedMonth}
       />
 
       <div className={styles.mainContent}>
         <div className={styles.leftColumn}>
+          <IncomeForm addIncome={addIncome} />
           <ExpenseForm addExpense={addExpense} />
         </div>
         
-        <ExpenseList 
-          expenses={data?.expenses} 
-          deleteExpense={deleteExpense}
-          updateExpense={updateExpense}
-        />
+        <div className={styles.rightColumn}>
+          <IncomeList 
+            incomes={data?.incomes} 
+            deleteIncome={deleteIncome}
+            updateIncome={updateIncome}
+          />
+          <ExpenseList 
+            expenses={data?.expenses} 
+            deleteExpense={deleteExpense}
+            updateExpense={updateExpense}
+          />
+        </div>
       </div>
     </main>
   );

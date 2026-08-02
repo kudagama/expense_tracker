@@ -19,10 +19,10 @@ export async function POST(request) {
 
     let monthData = await MonthData.findOne({ month, userId: user.userId });
     if (!monthData) {
-      monthData = new MonthData({ month, userId: user.userId, salary: 0, expenses: [] });
+      monthData = new MonthData({ month, userId: user.userId, salary: 0, expenses: [], incomes: [] });
     }
 
-    monthData.expenses.push({
+    monthData.incomes.push({
       amount: Number(amount),
       description,
       date: date ? new Date(date) : new Date()
@@ -32,7 +32,7 @@ export async function POST(request) {
 
     return NextResponse.json(monthData);
   } catch (error) {
-    console.error('Error adding expense:', error);
+    console.error('Error adding income:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -43,9 +43,9 @@ export async function PUT(request) {
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await request.json();
-    const { month, expenseId, amount, description, date } = body;
+    const { month, incomeId, amount, description, date } = body;
 
-    if (!month || !expenseId || !amount || !description) {
+    if (!month || !incomeId || !amount || !description) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -56,22 +56,22 @@ export async function PUT(request) {
       return NextResponse.json({ error: 'Month not found' }, { status: 404 });
     }
 
-    const expense = monthData.expenses.id(expenseId);
-    if (!expense) {
-      return NextResponse.json({ error: 'Expense not found' }, { status: 404 });
+    const income = monthData.incomes.id(incomeId);
+    if (!income) {
+      return NextResponse.json({ error: 'Income not found' }, { status: 404 });
     }
 
-    expense.amount = Number(amount);
-    expense.description = description;
+    income.amount = Number(amount);
+    income.description = description;
     if (date) {
-      expense.date = new Date(date);
+      income.date = new Date(date);
     }
 
     await monthData.save();
 
     return NextResponse.json(monthData);
   } catch (error) {
-    console.error('Error updating expense:', error);
+    console.error('Error updating income:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -82,10 +82,10 @@ export async function DELETE(request) {
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await request.json();
-    const { month, expenseId } = body;
+    const { month, incomeId } = body;
 
-    if (!month || !expenseId) {
-      return NextResponse.json({ error: 'Month and expenseId are required' }, { status: 400 });
+    if (!month || !incomeId) {
+      return NextResponse.json({ error: 'Month and incomeId are required' }, { status: 400 });
     }
 
     await dbConnect();
@@ -95,13 +95,13 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Month not found' }, { status: 404 });
     }
 
-    monthData.expenses.pull(expenseId);
+    monthData.incomes.pull(incomeId);
 
     await monthData.save();
 
     return NextResponse.json(monthData);
   } catch (error) {
-    console.error('Error deleting expense:', error);
+    console.error('Error deleting income:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

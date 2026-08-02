@@ -15,6 +15,21 @@ const ExpenseSchema = new mongoose.Schema({
   }
 });
 
+const IncomeSchema = new mongoose.Schema({
+  amount: {
+    type: Number,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  }
+});
+
 const MonthDataSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -37,7 +52,8 @@ const MonthDataSchema = new mongoose.Schema({
     type: String, // Format: YYYY-MM-DD
     default: null
   },
-  expenses: [ExpenseSchema]
+  expenses: [ExpenseSchema],
+  incomes: [IncomeSchema]
 }, { timestamps: true });
 
 MonthDataSchema.index({ userId: 1, month: 1 }, { unique: true });

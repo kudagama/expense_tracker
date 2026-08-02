@@ -4,15 +4,17 @@ import styles from './ExpenseForm.module.css';
 export default function ExpenseForm({ addExpense }) {
   const [expenseAmount, setExpenseAmount] = useState('');
   const [expenseDesc, setExpenseDesc] = useState('');
+  const [expenseDate, setExpenseDate] = useState(new Date().toISOString().split('T')[0]);
 
   const handleAddExpense = async (e) => {
     e.preventDefault();
-    if (!expenseAmount || !expenseDesc) return;
+    if (!expenseAmount || !expenseDesc || !expenseDate) return;
     
-    const success = await addExpense(expenseAmount, expenseDesc);
+    const success = await addExpense(expenseAmount, expenseDesc, expenseDate);
     if (success) {
       setExpenseAmount('');
       setExpenseDesc('');
+      setExpenseDate(new Date().toISOString().split('T')[0]);
     }
   };
 
@@ -20,6 +22,16 @@ export default function ExpenseForm({ addExpense }) {
     <section className={styles.formSection}>
       <h2>Add New Expense</h2>
       <form onSubmit={handleAddExpense}>
+        <div className={styles.formGroup}>
+          <label>Date</label>
+          <input
+            type="date"
+            className={styles.input}
+            value={expenseDate}
+            onChange={(e) => setExpenseDate(e.target.value)}
+            required
+          />
+        </div>
         <div className={styles.formGroup}>
           <label>Description</label>
           <input

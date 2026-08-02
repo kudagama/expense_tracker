@@ -4,7 +4,16 @@ import styles from './Header.module.css';
 
 export default function Header({ selectedMonth, setSelectedMonth }) {
   const [yearStr, monthStr] = selectedMonth.split('-');
-  const monthName = new Date(yearStr, monthStr - 1).toLocaleString('default', { month: 'long', year: 'numeric' });
+  const year = parseInt(yearStr, 10);
+  const month = parseInt(monthStr, 10) - 1;
+
+  const monthName = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
+  
+  const startDate = new Date(year, month, 23);
+  const endDate = new Date(year, month + 1, 22);
+
+  const formatDate = (date) => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const dateRangeStr = `${formatDate(startDate)} - ${formatDate(endDate)}`;
 
   return (
     <header className={styles.header}>
@@ -15,7 +24,10 @@ export default function Header({ selectedMonth, setSelectedMonth }) {
       </div>
       <h1 className={styles.title}>Expense Tracker</h1>
       <div className={styles.monthInputContainer}>
-        <p className={styles.subtitle}>{monthName} Overview</p>
+        <div className={styles.titleGroup}>
+          <p className={styles.subtitle}>{monthName} Overview</p>
+          <span className={styles.dateRange}>({dateRangeStr})</span>
+        </div>
         <input 
           type="month" 
           value={selectedMonth} 

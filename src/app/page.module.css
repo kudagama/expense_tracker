@@ -17,6 +17,12 @@
   gap: 2rem;
 }
 
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 .loading {
   text-align: center;
   padding: 3rem;

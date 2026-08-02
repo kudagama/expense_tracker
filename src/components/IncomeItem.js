@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
-import styles from './ExpenseList.module.css';
+import styles from './IncomeList.module.css';
 
-export default function ExpenseItem({ expense, deleteExpense, updateExpense }) {
+export default function IncomeItem({ income, deleteIncome, updateIncome }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editDesc, setEditDesc] = useState(expense.description);
-  const [editAmount, setEditAmount] = useState(expense.amount);
-  const [editDate, setEditDate] = useState(new Date(expense.date).toISOString().split('T')[0]);
+  const [editDesc, setEditDesc] = useState(income.description);
+  const [editAmount, setEditAmount] = useState(income.amount);
+  const [editDate, setEditDate] = useState(new Date(income.date).toISOString().split('T')[0]);
 
   const handleEditSubmit = async () => {
     if (!editDesc || !editAmount || !editDate) return;
-    const success = await updateExpense(expense._id, editDesc, editAmount, editDate);
+    const success = await updateIncome(income._id, editDesc, editAmount, editDate);
     if (success) setIsEditing(false);
   };
 
   if (isEditing) {
     return (
-      <div className={styles.expenseItem}>
+      <div className={styles.incomeItem}>
         <div className={styles.editForm}>
           <input 
             type="date"
@@ -46,22 +46,22 @@ export default function ExpenseItem({ expense, deleteExpense, updateExpense }) {
   }
 
   return (
-    <div className={styles.expenseItem}>
-      <div className={styles.expenseInfo}>
-        <span className={styles.expenseDesc}>{expense.description}</span>
-        <span className={styles.expenseDate}>
-          {new Date(expense.date).toLocaleDateString('en-US', { 
+    <div className={styles.incomeItem}>
+      <div className={styles.incomeInfo}>
+        <span className={styles.incomeDesc}>{income.description}</span>
+        <span className={styles.incomeDate}>
+          {new Date(income.date).toLocaleDateString('en-US', { 
             month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
           })}
         </span>
       </div>
-      <div className={styles.expenseRightContent}>
-        <div className={styles.expenseAmount}>
-          -Rs. {expense.amount.toLocaleString()}
+      <div className={styles.incomeRightContent}>
+        <div className={styles.incomeAmount}>
+          +Rs. {income.amount.toLocaleString()}
         </div>
         <div className={styles.actionButtons}>
           <button className={styles.iconBtn} onClick={() => setIsEditing(true)}>✏️</button>
-          <button className={styles.iconBtn} onClick={() => deleteExpense(expense._id)}>🗑️</button>
+          <button className={styles.iconBtn} onClick={() => deleteIncome(income._id)}>🗑️</button>
         </div>
       </div>
     </div>

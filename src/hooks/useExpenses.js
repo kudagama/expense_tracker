@@ -2,11 +2,12 @@ import { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 import { expenseService } from '../services/expenseService';
+import { getCycleMonth } from '../lib/dateUtils';
 
 export function useExpenses(initialMonth) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedMonth, setSelectedMonth] = useState(initialMonth || new Date().toISOString().slice(0, 7)); // YYYY-MM
+  const [selectedMonth, setSelectedMonth] = useState(initialMonth || getCycleMonth()); // YYYY-MM
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -37,11 +38,17 @@ export function useExpenses(initialMonth) {
     }
   };
 
-  const addExpense = async (amount, description) => {
+  const addExpense = async (amount, description, date) => {
     try {
-      await expenseService.addExpense({ month: selectedMonth, amount: Number(amount), description });
+      const targetMonth = getCycleMonth(date);
+      await expenseService.addExpense({ month: targetMonth, amount: Number(amount), description, date });
       toast.success('Expense added!');
-      fetchData();
+      
+      if (targetMonth !== selectedMonth) {
+        setSelectedMonth(targetMonth);
+      } else {
+        fetchData();
+      }
       return true;
     } catch (error) {
       toast.error('Failed to add expense');
@@ -75,14 +82,88 @@ export function useExpenses(initialMonth) {
     }
   };
 
-  const updateExpense = async (expenseId, description, amount) => {
+  const updateExpense = async (expenseId, description, amount, date) => {
     try {
-      await expenseService.updateExpense({ month: selectedMonth, expenseId, description, amount: Number(amount) });
-      toast.success('Expense updated!');
-      fetchData();
+      const targetMonth = getCycleMonth(date);
+      
+      if (targetMonth !== selectedMonth) {
+        await expenseService.deleteExpense({ month: selectedMonth, expenseId });
+        await expenseService.addExpense({ month: targetMonth, amount: Number(amount), description, date });
+        toast.success(`Expense moved to ${targetMonth}!`);
+        setSelectedMonth(targetMonth);
+      } else {
+        await expenseService.updateExpense({ month: selectedMonth, expenseId, description, amount: Number(amount), date });
+        toast.success('Expense updated!');
+        fetchData();
+      }
       return true;
     } catch (error) {
       toast.error('Failed to update expense');
+      return false;
+    }
+  };
+
+  const addIncome = async (amount, description, date) => {
+    try {
+      const targetMonth = getCycleMonth(date);
+      await expenseService.addIncome({ month: targetMonth, amount: Number(amount), description, date });
+      toast.success('Income added!');
+      
+      if (targetMonth !== selectedMonth) {
+        setSelectedMonth(targetMonth);
+      } else {
+        fetchData();
+      }
+      return true;
+    } catch (error) {
+      toast.error('Failed to add income');
+      return false;
+    }
+  };
+
+  const deleteIncome = async (incomeId) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#334155',
+      confirmButtonText: 'Yes, delete it!',
+      background: '#1e293b',
+      color: '#f8fafc'
+    });
+
+    if (!result.isConfirmed) return false;
+
+    try {
+      await expenseService.deleteIncome({ month: selectedMonth, incomeId });
+      toast.success('Income deleted!');
+      fetchData();
+      return true;
+    } catch (error) {
+      toast.error('Failed to delete income');
+      return false;
+    }
+  };
+
+  const updateIncome = async (incomeId, description, amount, date) => {
+    try {
+      const targetMonth = getCycleMonth(date);
+      
+      if (targetMonth !== selectedMonth) {
+        await expenseService.deleteIncome({ month: selectedMonth, incomeId });
+        await expenseService.addIncome({ month: targetMonth, amount: Number(amount), description, date });
+        toast.success(`Income moved to ${targetMonth}!`);
+        setSelectedMonth(targetMonth);
+      } else {
+        await expenseService.updateIncome({ month: selectedMonth, incomeId, description, amount: Number(amount), date });
+        toast.success('Income updated!');
+        fetchData();
+      }
+      return true;
+    } catch (error) {
+      toast.error('Failed to update income');
       return false;
     }
   };
@@ -95,6 +176,9 @@ export function useExpenses(initialMonth) {
     updateSalary,
     addExpense,
     deleteExpense,
-    updateExpense
+    updateExpense,
+    addIncome,
+    deleteIncome,
+    updateIncome
   };
 }

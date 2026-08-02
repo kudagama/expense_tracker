@@ -52,8 +52,21 @@
   margin-top: 1rem;
 }
 
-.monthInputContainer p {
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+}
+
+.titleGroup p {
   margin: 0;
+}
+
+.dateRange {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  opacity: 0.8;
 }
 
 .input {
