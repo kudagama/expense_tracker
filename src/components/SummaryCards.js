@@ -134,7 +134,7 @@ export default function SummaryCards({ data, updateSalary, selectedMonth }) {
         <div className={`${styles.cardValue} ${styles.success}`}>Rs. {remainingSalary.toLocaleString()}</div>
       </div>
       <div className={styles.card}>
-        <div className={styles.cardTitle}>Daily Budget ({daysInMonth} Days)</div>
+        <div className={styles.cardTitle}>Daily Budget ({daysLeft} {daysLeft === 1 ? 'Day' : 'Days'} Left)</div>
         <div className={`${styles.cardValue} ${styles.warning}`}>Rs. {dailyLimit.toFixed(2)}</div>
       </div>
     </div>
