@@ -4,7 +4,7 @@ import SavingsItem from './SavingsItem';
 
 const ITEMS_PER_PAGE = 10;
 
-export default function SavingsList({ savings, deleteSavings, updateSavings }) {
+export default function SavingsList({ savings, deleteSavings, updateSavings, transferSavingsToWallet }) {
   const [currentPage, setCurrentPage] = useState(1);
 
   if (!savings || savings.length === 0) {
@@ -35,6 +35,7 @@ export default function SavingsList({ savings, deleteSavings, updateSavings }) {
             saving={saving}
             deleteSavings={deleteSavings}
             updateSavings={updateSavings}
+            transferSavingsToWallet={transferSavingsToWallet}
           />
         ))}
       </div>

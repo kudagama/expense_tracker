@@ -233,6 +233,48 @@ export function useExpenses(initialMonth) {
     }
   };
 
+  const transferSavingsToWallet = async (savingsId, transferAmount) => {
+    try {
+      const saving = data?.savings?.find(s => s._id === savingsId);
+      if (!saving || transferAmount <= 0 || transferAmount > saving.amount) {
+        toast.error('Invalid transfer amount');
+        return false;
+      }
+
+      const newAmount = saving.amount - transferAmount;
+
+      // Update or delete the savings record
+      if (newAmount === 0) {
+        await expenseService.deleteSavings({ month: selectedMonth, savingsId });
+      } else {
+        await expenseService.updateSavings({ 
+          month: selectedMonth, 
+          savingsId, 
+          description: saving.description, 
+          amount: newAmount, 
+          date: saving.date 
+        });
+      }
+
+      // Add as income to the wallet
+      const today = new Date().toISOString().split('T')[0];
+      await expenseService.addIncome({ 
+        month: selectedMonth, 
+        amount: transferAmount, 
+        description: `From Savings: ${saving.description}`, 
+        date: today 
+      });
+
+      toast.success(`Transferred Rs. ${transferAmount} to Wallet!`);
+      fetchData();
+      return true;
+    } catch (error) {
+      console.error('Transfer failed:', error);
+      toast.error('Transfer failed');
+      return false;
+    }
+  };
+
   return {
     data,
     loading,
@@ -247,6 +289,7 @@ export function useExpenses(initialMonth) {
     updateIncome,
     addSavings,
     deleteSavings,
-    updateSavings
+    updateSavings,
+    transferSavingsToWallet
   };
 }

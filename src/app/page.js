@@ -27,7 +27,8 @@ export default function Home() {
     updateIncome,
     addSavings,
     deleteSavings,
-    updateSavings
+    updateSavings,
+    transferSavingsToWallet
   } = useExpenses();
 
   if (loading && !data) {
@@ -72,6 +73,7 @@ export default function Home() {
             savings={data?.savings}
             deleteSavings={deleteSavings}
             updateSavings={updateSavings}
+            transferSavingsToWallet={transferSavingsToWallet}
           />
           <ExpenseList 
             expenses={data?.expenses} 
