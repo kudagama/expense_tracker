@@ -25,7 +25,7 @@ export default function SummaryCards({ data, updateSalary, selectedMonth }) {
   const salary = data?.salary || 0;
   const totalIncomes = data?.incomes?.reduce((sum, item) => sum + item.amount, 0) || 0;
   const totalExpenses = data?.expenses?.reduce((sum, item) => sum + item.amount, 0) || 0;
-  const totalSavings = data?.savings?.reduce((sum, item) => sum + item.amount, 0) || 0;
+  const totalSavings = data?.globalTotalSavings || 0;
   const remainingSalary = (salary + totalIncomes) - totalExpenses;
 
   // Calculate Daily Budget based on days remaining in the cycle

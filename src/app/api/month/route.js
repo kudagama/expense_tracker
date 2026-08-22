@@ -37,7 +37,17 @@ export async function GET(request) {
       });
     }
 
-    return NextResponse.json(monthData);
+    // Calculate global total savings across all months
+    const allMonths = await MonthData.find({ userId: authUser.userId });
+    const globalTotalSavings = allMonths.reduce((total, md) => {
+      const monthSavings = md.savings?.reduce((sum, item) => sum + item.amount, 0) || 0;
+      return total + monthSavings;
+    }, 0);
+
+    const responseData = monthData.toObject();
+    responseData.globalTotalSavings = globalTotalSavings;
+
+    return NextResponse.json(responseData);
   } catch (error) {
     console.error('Error fetching month data:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
