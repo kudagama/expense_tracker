@@ -54,6 +54,8 @@ export default function Home() {
         data={data} 
         updateSalary={updateSalary}
         selectedMonth={selectedMonth}
+        addSavings={addSavings}
+        addIncome={addIncome}
       />
 
       <div className={styles.mainContent}>

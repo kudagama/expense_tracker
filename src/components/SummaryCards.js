@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from './SummaryCards.module.css';
+import Swal from 'sweetalert2';
 
-export default function SummaryCards({ data, updateSalary, selectedMonth }) {
+export default function SummaryCards({ data, updateSalary, selectedMonth, addSavings, addIncome }) {
   const [isEditingSalary, setIsEditingSalary] = useState(false);
   const [salaryInput, setSalaryInput] = useState('');
   const [salaryDateInput, setSalaryDateInput] = useState('');
@@ -27,6 +28,47 @@ export default function SummaryCards({ data, updateSalary, selectedMonth }) {
   const totalExpenses = data?.expenses?.reduce((sum, item) => sum + item.amount, 0) || 0;
   const totalSavings = data?.globalTotalSavings || 0;
   const remainingSalary = (salary + totalIncomes) - totalExpenses;
+
+  const handleGlobalTransfer = async () => {
+    if (totalSavings <= 0) {
+      Swal.fire({
+        title: 'No Savings Available',
+        text: 'You do not have any savings to transfer.',
+        icon: 'info',
+        background: '#1e293b',
+        color: '#f8fafc'
+      });
+      return;
+    }
+
+    const { value: amount } = await Swal.fire({
+      title: 'Transfer from Total Savings',
+      text: `Available total savings: Rs. ${totalSavings.toLocaleString()}`,
+      input: 'number',
+      inputLabel: 'Amount to transfer to wallet',
+      showCancelButton: true,
+      confirmButtonText: 'Transfer',
+      confirmButtonColor: '#3b82f6',
+      cancelButtonColor: '#334155',
+      background: '#1e293b',
+      color: '#f8fafc',
+      inputValidator: (value) => {
+        if (!value || Number(value) <= 0) return 'Please enter a valid amount!';
+        if (Number(value) > totalSavings) return 'Cannot transfer more than available total savings!';
+      }
+    });
+
+    if (amount) {
+      const transferAmount = Number(amount);
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Deduct from savings by adding a negative saving record
+      await addSavings(-transferAmount, 'Withdrawal to Wallet', today);
+      
+      // Add to income
+      await addIncome(transferAmount, 'Transfer from Savings', today);
+    }
+  };
 
   // Calculate Daily Budget based on days remaining in the cycle
   let daysLeft = 1; // Default to 1 to avoid division by zero
@@ -131,7 +173,10 @@ export default function SummaryCards({ data, updateSalary, selectedMonth }) {
         <div className={`${styles.cardValue} ${styles.danger}`}>Rs. {totalExpenses.toLocaleString()}</div>
       </div>
       <div className={styles.card}>
-        <div className={styles.cardTitle}>Total Savings</div>
+        <div className={styles.cardTitle}>
+          <span>Total Savings</span>
+          <button onClick={handleGlobalTransfer} className={styles.editBtn} title="Transfer from Total Savings" style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}>💸</button>
+        </div>
         <div className={`${styles.cardValue} ${styles.primary}`} style={{color: '#3b82f6'}}>Rs. {totalSavings.toLocaleString()}</div>
       </div>
       <div className={styles.card}>
