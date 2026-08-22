@@ -25,7 +25,8 @@ export default function SummaryCards({ data, updateSalary, selectedMonth }) {
   const salary = data?.salary || 0;
   const totalIncomes = data?.incomes?.reduce((sum, item) => sum + item.amount, 0) || 0;
   const totalExpenses = data?.expenses?.reduce((sum, item) => sum + item.amount, 0) || 0;
-  const remainingSalary = (salary + totalIncomes) - totalExpenses;
+  const totalSavings = data?.savings?.reduce((sum, item) => sum + item.amount, 0) || 0;
+  const remainingSalary = (salary + totalIncomes) - totalExpenses - totalSavings;
 
   // Calculate Daily Budget based on days remaining in the cycle
   let daysLeft = 1; // Default to 1 to avoid division by zero
@@ -128,6 +129,10 @@ export default function SummaryCards({ data, updateSalary, selectedMonth }) {
       <div className={styles.card}>
         <div className={styles.cardTitle}>Total Expenses</div>
         <div className={`${styles.cardValue} ${styles.danger}`}>Rs. {totalExpenses.toLocaleString()}</div>
+      </div>
+      <div className={styles.card}>
+        <div className={styles.cardTitle}>Total Savings</div>
+        <div className={`${styles.cardValue} ${styles.primary}`} style={{color: '#3b82f6'}}>Rs. {totalSavings.toLocaleString()}</div>
       </div>
       <div className={styles.card}>
         <div className={styles.cardTitle}>Remaining Balance</div>

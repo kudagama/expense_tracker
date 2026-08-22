@@ -73,5 +73,35 @@ export const expenseService = {
     });
     if (!res.ok) throw new Error('Failed to update income');
     return res.json();
+  },
+
+  addSavings: async ({ month, amount, description, date }) => {
+    const res = await fetch('/api/savings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ month, amount, description, date }),
+    });
+    if (!res.ok) throw new Error('Failed to add savings');
+    return res.json();
+  },
+
+  deleteSavings: async ({ month, savingsId }) => {
+    const res = await fetch('/api/savings', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ month, savingsId }),
+    });
+    if (!res.ok) throw new Error('Failed to delete savings');
+    return res.json();
+  },
+
+  updateSavings: async ({ month, savingsId, description, amount, date }) => {
+    const res = await fetch('/api/savings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ month, savingsId, description, amount, date }),
+    });
+    if (!res.ok) throw new Error('Failed to update savings');
+    return res.json();
   }
 };

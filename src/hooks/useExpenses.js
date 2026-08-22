@@ -168,6 +168,71 @@ export function useExpenses(initialMonth) {
     }
   };
 
+  const addSavings = async (amount, description, date) => {
+    try {
+      const targetMonth = getCycleMonth(date);
+      await expenseService.addSavings({ month: targetMonth, amount: Number(amount), description, date });
+      toast.success('Savings added!');
+      
+      if (targetMonth !== selectedMonth) {
+        setSelectedMonth(targetMonth);
+      } else {
+        fetchData();
+      }
+      return true;
+    } catch (error) {
+      toast.error('Failed to add savings');
+      return false;
+    }
+  };
+
+  const deleteSavings = async (savingsId) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#334155',
+      confirmButtonText: 'Yes, delete it!',
+      background: '#1e293b',
+      color: '#f8fafc'
+    });
+
+    if (!result.isConfirmed) return false;
+
+    try {
+      await expenseService.deleteSavings({ month: selectedMonth, savingsId });
+      toast.success('Savings deleted!');
+      fetchData();
+      return true;
+    } catch (error) {
+      toast.error('Failed to delete savings');
+      return false;
+    }
+  };
+
+  const updateSavings = async (savingsId, description, amount, date) => {
+    try {
+      const targetMonth = getCycleMonth(date);
+      
+      if (targetMonth !== selectedMonth) {
+        await expenseService.deleteSavings({ month: selectedMonth, savingsId });
+        await expenseService.addSavings({ month: targetMonth, amount: Number(amount), description, date });
+        toast.success(`Savings moved to ${targetMonth}!`);
+        setSelectedMonth(targetMonth);
+      } else {
+        await expenseService.updateSavings({ month: selectedMonth, savingsId, description, amount: Number(amount), date });
+        toast.success('Savings updated!');
+        fetchData();
+      }
+      return true;
+    } catch (error) {
+      toast.error('Failed to update savings');
+      return false;
+    }
+  };
+
   return {
     data,
     loading,
@@ -179,6 +244,9 @@ export function useExpenses(initialMonth) {
     updateExpense,
     addIncome,
     deleteIncome,
-    updateIncome
+    updateIncome,
+    addSavings,
+    deleteSavings,
+    updateSavings
   };
 }

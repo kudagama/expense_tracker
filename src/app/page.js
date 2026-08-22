@@ -9,6 +9,8 @@ import ExpenseForm from '../components/ExpenseForm';
 import ExpenseList from '../components/ExpenseList';
 import IncomeForm from '../components/IncomeForm';
 import IncomeList from '../components/IncomeList';
+import SavingsForm from '../components/SavingsForm';
+import SavingsList from '../components/SavingsList';
 
 export default function Home() {
   const {
@@ -22,7 +24,10 @@ export default function Home() {
     updateExpense,
     addIncome,
     deleteIncome,
-    updateIncome
+    updateIncome,
+    addSavings,
+    deleteSavings,
+    updateSavings
   } = useExpenses();
 
   if (loading && !data) {
@@ -53,6 +58,7 @@ export default function Home() {
       <div className={styles.mainContent}>
         <div className={styles.leftColumn}>
           <IncomeForm addIncome={addIncome} />
+          <SavingsForm addSavings={addSavings} />
           <ExpenseForm addExpense={addExpense} />
         </div>
         
@@ -61,6 +67,11 @@ export default function Home() {
             incomes={data?.incomes} 
             deleteIncome={deleteIncome}
             updateIncome={updateIncome}
+          />
+          <SavingsList
+            savings={data?.savings}
+            deleteSavings={deleteSavings}
+            updateSavings={updateSavings}
           />
           <ExpenseList 
             expenses={data?.expenses} 
