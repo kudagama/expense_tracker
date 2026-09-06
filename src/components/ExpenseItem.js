@@ -9,7 +9,10 @@ export default function ExpenseItem({ expense, deleteExpense, updateExpense }) {
 
   const handleEditSubmit = async () => {
     if (!editDesc || !editAmount || !editDate) return;
-    const success = await updateExpense(expense._id, editDesc, editAmount, editDate);
+    const origDate = new Date(expense.date);
+    const [year, month, day] = editDate.split('-');
+    const finalDate = new Date(year, month - 1, day, origDate.getHours(), origDate.getMinutes(), origDate.getSeconds());
+    const success = await updateExpense(expense._id, editDesc, editAmount, finalDate.toISOString());
     if (success) setIsEditing(false);
   };
 

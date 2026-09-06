@@ -10,7 +10,11 @@ export default function SavingsForm({ addSavings }) {
     e.preventDefault();
     if (!savingsAmount || !savingsDesc || !savingsDate) return;
     
-    const success = await addSavings(savingsAmount, savingsDesc, savingsDate);
+    const now = new Date();
+    const [year, month, day] = savingsDate.split('-');
+    const finalDate = new Date(year, month - 1, day, now.getHours(), now.getMinutes(), now.getSeconds());
+    
+    const success = await addSavings(savingsAmount, savingsDesc, finalDate.toISOString());
     if (success) {
       setSavingsAmount('');
       setSavingsDesc('');

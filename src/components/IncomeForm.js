@@ -10,7 +10,11 @@ export default function IncomeForm({ addIncome }) {
     e.preventDefault();
     if (!incomeAmount || !incomeDesc || !incomeDate) return;
     
-    const success = await addIncome(incomeAmount, incomeDesc, incomeDate);
+    const now = new Date();
+    const [year, month, day] = incomeDate.split('-');
+    const finalDate = new Date(year, month - 1, day, now.getHours(), now.getMinutes(), now.getSeconds());
+    
+    const success = await addIncome(incomeAmount, incomeDesc, finalDate.toISOString());
     if (success) {
       setIncomeAmount('');
       setIncomeDesc('');

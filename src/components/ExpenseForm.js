@@ -10,7 +10,11 @@ export default function ExpenseForm({ addExpense }) {
     e.preventDefault();
     if (!expenseAmount || !expenseDesc || !expenseDate) return;
     
-    const success = await addExpense(expenseAmount, expenseDesc, expenseDate);
+    const now = new Date();
+    const [year, month, day] = expenseDate.split('-');
+    const finalDate = new Date(year, month - 1, day, now.getHours(), now.getMinutes(), now.getSeconds());
+    
+    const success = await addExpense(expenseAmount, expenseDesc, finalDate.toISOString());
     if (success) {
       setExpenseAmount('');
       setExpenseDesc('');
