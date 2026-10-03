@@ -27,7 +27,8 @@ export default function SummaryCards({ data, updateSalary, selectedMonth, addSav
   const totalIncomes = data?.incomes?.reduce((sum, item) => sum + item.amount, 0) || 0;
   const totalExpenses = data?.expenses?.reduce((sum, item) => sum + item.amount, 0) || 0;
   const totalSavings = data?.globalTotalSavings || 0;
-  const remainingSalary = (salary + totalIncomes) - totalExpenses;
+  const currentMonthSavings = data?.savings?.reduce((sum, item) => sum + item.amount, 0) || 0;
+  const remainingSalary = (salary + totalIncomes) - totalExpenses - currentMonthSavings;
 
   const handleGlobalTransfer = async () => {
     if (totalSavings <= 0) {
