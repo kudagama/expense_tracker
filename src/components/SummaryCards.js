@@ -30,7 +30,7 @@ export default function SummaryCards({ data, updateSalary, selectedMonth, addSav
   const currentMonthSavings = data?.savings?.reduce((sum, item) => sum + item.amount, 0) || 0;
   const remainingSalary = (salary + totalIncomes) - totalExpenses - currentMonthSavings;
 
-  const handleGlobalTransfer = async () => { Swal.fire({title:'Temporarily unavailable',text:'Savings withdrawals are disabled until atomic transfer support is ready.',icon:'info'}); };
+  const handleGlobalTransfer = async () => { Swal.fire({title:'Withdraw from a savings record',text:'Use the transfer button on an individual savings record in its original salary cycle. Global withdrawals are not supported yet.',icon:'info'}); };
 
   // Calculate Daily Budget based on days remaining in the cycle
   let daysLeft = 1; // Default to 1 to avoid division by zero
