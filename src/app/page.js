@@ -9,6 +9,7 @@ import Header from '../components/Header';
 import PwaControls from '../components/PwaControls';
 import SmartInsights from '../components/SmartInsights';
 import FinanceOverview from '../components/FinanceOverview';
+import RecurringBills from '../components/RecurringBills';
 import SavingsGoals from '../components/SavingsGoals';
 import BudgetPlanner from '../components/BudgetPlanner';
 import WalletPlanner from '../components/WalletPlanner';
@@ -72,7 +73,7 @@ export default function Home() {
       <div className={styles.shortcuts}>{[['transactions','⇄','Income & savings'],['wallets','▣','Manage wallets'],['budget','◎','Plan budget'],['reports','▥','View reports']].map(([id,icon,label])=><button key={id} onClick={()=>navigate(id)}><span>{icon}</span>{label}</button>)}</div></div>
 
       <div hidden={section!=='wallets'}><WalletPlanner onSaved={refreshData} key={'wallet-'+selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
-      <div hidden={section!=='budget'}><SavingsGoals data={data}/><BudgetPlanner onSaved={refreshData} key={selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
+      <div hidden={section!=='budget'}><RecurringBills data={data} selectedMonth={selectedMonth}/><SavingsGoals data={data}/><BudgetPlanner onSaved={refreshData} key={selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
 
       {section==='reports'&&<FinancialReports data={data} selectedMonth={selectedMonth} />}
       <div hidden={section!=='transactions'}>
