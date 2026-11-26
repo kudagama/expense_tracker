@@ -71,7 +71,7 @@ export default function Home() {
       <div hidden={section!=='transactions'}>
 
       <SummaryCards 
-        data={data} 
+        data={data?.month===selectedMonth?data:null} 
         updateSalary={updateSalary}
         selectedMonth={selectedMonth}
         addSavings={addSavings}
@@ -86,18 +86,18 @@ export default function Home() {
         
         <div className={styles.rightColumn}>
           <IncomeList 
-            incomes={data?.incomes} 
+            incomes={data?.month===selectedMonth?data.incomes:[]} 
             deleteIncome={deleteIncome}
             updateIncome={updateIncome}
           />
           <SavingsList
-            savings={data?.savings}
+            savings={data?.month===selectedMonth?data.savings:[]}
             deleteSavings={deleteSavings}
             updateSavings={updateSavings}
             transferSavingsToWallet={transferSavingsToWallet}
           />
           <ExpenseList 
-            expenses={data?.expenses} 
+            expenses={data?.month===selectedMonth?data.expenses:[]} 
             deleteExpense={deleteExpense}
             updateExpense={updateExpense}
           />
