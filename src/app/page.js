@@ -7,6 +7,7 @@ import styles from './page.module.css';
 import { useExpenses } from '../hooks/useExpenses';
 import Header from '../components/Header';
 import PwaControls from '../components/PwaControls';
+import SmartInsights from '../components/SmartInsights';
 import FinanceOverview from '../components/FinanceOverview';
 import SavingsGoals from '../components/SavingsGoals';
 import BudgetPlanner from '../components/BudgetPlanner';
@@ -67,6 +68,7 @@ export default function Home() {
       <PwaControls />
       <div className={styles.pageTitle}><div><p>YOUR MONEY, YOUR FUTURE</p><h2>{sections.find(x=>x[0]===section)?.[1]}</h2></div>{loading&&<small role="status">Refreshing…</small>}</div>
       <div hidden={section!=='home'}><FinanceOverview data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} addExpense={addExpense} />
+      <SmartInsights data={data} selectedMonth={selectedMonth}/>
       <div className={styles.shortcuts}>{[['transactions','⇄','Income & savings'],['wallets','▣','Manage wallets'],['budget','◎','Plan budget'],['reports','▥','View reports']].map(([id,icon,label])=><button key={id} onClick={()=>navigate(id)}><span>{icon}</span>{label}</button>)}</div></div>
 
       <div hidden={section!=='wallets'}><WalletPlanner onSaved={refreshData} key={'wallet-'+selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
