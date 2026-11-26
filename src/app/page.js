@@ -5,6 +5,7 @@ import styles from './page.module.css';
 import { useExpenses } from '../hooks/useExpenses';
 import Header from '../components/Header';
 import FinanceOverview from '../components/FinanceOverview';
+import BudgetPlanner from '../components/BudgetPlanner';
 import SummaryCards from '../components/SummaryCards';
 import ExpenseList from '../components/ExpenseList';
 import IncomeForm from '../components/IncomeForm';
@@ -51,6 +52,8 @@ export default function Home() {
       />
 
       <FinanceOverview data={data} selectedMonth={selectedMonth} addExpense={addExpense} />
+
+      <BudgetPlanner key={selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} />
 
       <SummaryCards 
         data={data} 
