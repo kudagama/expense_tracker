@@ -1,15 +1,15 @@
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_development';
+const secret = () => { const value=process.env.JWT_SECRET; if(!value || value.length<32) throw new Error('JWT_SECRET must contain at least 32 characters'); return value; };
 
 export const signToken = (payload) => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign(payload, secret(), { expiresIn: '7d' });
 };
 
 export const verifyToken = (token) => {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, secret(), { algorithms: ['HS256'] });
   } catch (error) {
     return null;
   }
