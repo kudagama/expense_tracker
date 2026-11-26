@@ -13,7 +13,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const month = searchParams.get('month');
 
-    if (!month) {
+    if (typeof month !== 'string' || !/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
       return NextResponse.json({ error: 'Month is required' }, { status: 400 });
     }
 
@@ -47,7 +47,7 @@ export async function GET(request) {
     const responseData = monthData.toObject();
     responseData.globalTotalSavings = globalTotalSavings;
 
-    return NextResponse.json(responseData);
+    return NextResponse.json(responseData,{headers:{'Cache-Control':'no-store'}});
   } catch (error) {
     console.error('Error fetching month data:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -62,7 +62,7 @@ export async function POST(request) {
     const body = await request.json();
     const { month, salary, salaryDate } = body;
 
-    if (!month || salary === undefined) {
+    if (typeof month !== 'string' || !/^\d{4}-(0[1-9]|1[0-2])$/.test(month) || typeof salary !== 'number' || !Number.isFinite(salary) || salary < 0 || salary > 1e9) {
       return NextResponse.json({ error: 'Month and salary are required' }, { status: 400 });
     }
 
