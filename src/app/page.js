@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import styles from './page.module.css';
 import { useExpenses } from '../hooks/useExpenses';
 import Header from '../components/Header';
+import PwaControls from '../components/PwaControls';
 import FinanceOverview from '../components/FinanceOverview';
 import BudgetPlanner from '../components/BudgetPlanner';
 import WalletPlanner from '../components/WalletPlanner';
@@ -60,6 +61,7 @@ export default function Home() {
         setSelectedMonth={setSelectedMonth} 
       />
 
+      <PwaControls />
       <div className={styles.pageTitle}><div><p>YOUR MONEY, YOUR FUTURE</p><h2>{sections.find(x=>x[0]===section)?.[1]}</h2></div>{loading&&<small role="status">Refreshing…</small>}</div>
       <div hidden={section!=='home'}><FinanceOverview data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} addExpense={addExpense} />
       <div className={styles.shortcuts}>{[['transactions','⇄','Income & savings'],['wallets','▣','Manage wallets'],['budget','◎','Plan budget'],['reports','▥','View reports']].map(([id,icon,label])=><button key={id} onClick={()=>navigate(id)}><span>{icon}</span>{label}</button>)}</div></div>
