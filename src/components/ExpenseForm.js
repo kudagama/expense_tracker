@@ -7,6 +7,7 @@ const today = () => { const d=new Date(); return [d.getFullYear(),String(d.getMo
 export default function ExpenseForm({addExpense, expenses=[], onSaved}) {
  const ranked=[...categories].sort((a,b)=>expenses.filter(e=>String(e.description).split(' · ')[0]===b[1]).length-expenses.filter(e=>String(e.description).split(' · ')[0]===a[1]).length);
  const suggestions=[...new Set([...expenses].sort((a,b)=>new Date(b.date)-new Date(a.date)).map(e=>String(e.description||'')).filter(x=>categories.some(c=>x.startsWith(c[1]+' · '))))].slice(0,5);
+ const [wallet,setWallet]=useState('cash');
  const [amount,setAmount]=useState('');
  const [category,setCategory]=useState('');
  const [note,setNote]=useState('');
@@ -26,7 +27,7 @@ export default function ExpenseForm({addExpense, expenses=[], onSaved}) {
   lock.current=true;setBusy(true);setError('');
   try{
    const description=category+(note.trim()?' · '+note.trim():'');
-   if(await addExpense(value,description,when.toISOString())){setAmount('');setNote('');setCategory('');setDate(today());onSaved?.();}
+   if(await addExpense(value,description,when.toISOString(),wallet)){setAmount('');setNote('');setCategory('');setDate(today());onSaved?.();}
    else setError('Could not save. Your entry is still here; please try again.');
   }catch{setError('Could not save. Please try again.');}
   finally{lock.current=false;setBusy(false);}
@@ -39,6 +40,7 @@ export default function ExpenseForm({addExpense, expenses=[], onSaved}) {
    <button type="button" className={styles.keyToggle} aria-expanded={keypad} onClick={()=>setKeypad(v=>!v)}>{keypad?'Hide keypad':'Show numeric keypad'}</button>
    {keypad&&<div className={styles.keypad}>{['1','2','3','4','5','6','7','8','9','.','0','⌫'].map(k=><button type="button" key={k} onClick={()=>setAmount(v=>{if(k==='⌫')return v.slice(0,-1);const next=v+k;return /^\d{0,9}(\.\d{0,2})?$/.test(next)?next:v;})}>{k}</button>)}</div>}
    <div className={styles.presets}>{[100,250,500,1000].map(n=><button key={n} type="button" onClick={()=>setAmount(String(n))}>Rs. {n.toLocaleString()}</button>)}</div>
+   <div className={styles.formGroup}><label htmlFor="expense-wallet">Paid from</label><select id="expense-wallet" className={styles.input} value={wallet} onChange={e=>setWallet(e.target.value)}>{[['cash','Cash'],['bank','Bank account'],['savings','Savings account'],['credit','Credit card'],['unassigned','Unassigned']].map(([k,v])=><option key={k} value={k}>{v}</option>)}</select></div>
    <fieldset className={styles.categories}><legend>Category</legend><div className={styles.categoryGrid}>{ranked.map(([icon,label])=><button type="button" key={label} aria-pressed={category===label} className={category===label?styles.selected:''} onClick={()=>setCategory(label)}><span>{icon}</span>{label}</button>)}</div></fieldset>
    {suggestions.length>0&&<div className={styles.suggestions}><label>Recent purchases</label><div className={styles.presets}>{suggestions.map(x=><button type="button" key={x} onClick={()=>{const i=x.indexOf(' · ');setCategory(x.slice(0,i));setNote(x.slice(i+3));}}>{x.split(' · ').slice(1).join(' · ')}</button>)}</div></div>}
    <div className={styles.formGroup}><label htmlFor="expense-note">Note (optional)</label><input id="expense-note" className={styles.input} maxLength={150} value={note} onChange={e=>setNote(e.target.value)} placeholder={categories.find(c=>c[1]===category)?.[2]||'What did you buy?'}/></div>
