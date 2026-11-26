@@ -15,11 +15,11 @@ export const expenseService = {
     return res.json();
   },
 
-  addExpense: async ({ month, amount, description, date }) => {
+  addExpense: async ({ month, amount, description, date, wallet }) => {
     const res = await fetch('/api/expenses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ month, amount, description, date }),
+      body: JSON.stringify({ month, amount, description, date, wallet }),
     });
     if (!res.ok) throw new Error('Failed to add expense');
     return res.json();
