@@ -30,12 +30,13 @@ export default function FinanceOverview({data,selectedMonth,addExpense}) {
  const start=new Date(y,m-1,23);
  const end=new Date(y,m,22,23,59,59,999);
  const now=new Date();
- const daysLeft=now>end?0:Math.max(1,Math.ceil((end-(now<start?start:now))/86400000));
+ const todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+ const daysLeft=now>end?0:Math.floor((end-Math.max(start,todayStart))/86400000)+1;
  const dailyBudget=daysLeft?Math.max(0,available)/daysLeft:0;
  const today=localKey(now);
  const todaySpend=expenses.filter(x=>localKey(x.date)===today).reduce((s,x)=>s+Number(x.amount||0),0);
  const categories=GROUPS.map(g=>({...g,total:expenses.filter(e=>groupFor(e.description).label===g.label).reduce((s,e)=>s+Number(e.amount||0),0)})).filter(g=>g.total>0).sort((a,b)=>b.total-a.total);
- const recent=expenses.filter(e=>e.description.toLowerCase().includes(query.toLowerCase())).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6);
+ const recent=expenses.filter(e=>String(e.description||'').toLowerCase().includes(query.toLowerCase())).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6);
  return <section className={styles.overview} aria-label="Finance overview">
   <div className={styles.heading}><div><p className={styles.kicker}>YOUR FINANCIAL SNAPSHOT</p><h2>Make every rupee count ✨</h2><p>Track today, understand your spending, and stay on budget.</p></div><span className={styles.cycle}>{start.toLocaleDateString('en-LK',{day:'numeric',month:'short'})} – {end.toLocaleDateString('en-LK',{day:'numeric',month:'short',year:'numeric'})}</span></div>
   <div className={styles.cards}>
