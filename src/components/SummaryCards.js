@@ -30,46 +30,7 @@ export default function SummaryCards({ data, updateSalary, selectedMonth, addSav
   const currentMonthSavings = data?.savings?.reduce((sum, item) => sum + item.amount, 0) || 0;
   const remainingSalary = (salary + totalIncomes) - totalExpenses - currentMonthSavings;
 
-  const handleGlobalTransfer = async () => {
-    if (totalSavings <= 0) {
-      Swal.fire({
-        title: 'No Savings Available',
-        text: 'You do not have any savings to transfer.',
-        icon: 'info',
-        background: '#1e293b',
-        color: '#f8fafc'
-      });
-      return;
-    }
-
-    const { value: amount } = await Swal.fire({
-      title: 'Transfer from Total Savings',
-      text: `Available total savings: Rs. ${totalSavings.toLocaleString()}`,
-      input: 'number',
-      inputLabel: 'Amount to transfer to wallet',
-      showCancelButton: true,
-      confirmButtonText: 'Transfer',
-      confirmButtonColor: '#3b82f6',
-      cancelButtonColor: '#334155',
-      background: '#1e293b',
-      color: '#f8fafc',
-      inputValidator: (value) => {
-        if (!value || Number(value) <= 0) return 'Please enter a valid amount!';
-        if (Number(value) > totalSavings) return 'Cannot transfer more than available total savings!';
-      }
-    });
-
-    if (amount) {
-      const transferAmount = Number(amount);
-      const today = new Date().toISOString().split('T')[0];
-      
-      // Deduct from savings by adding a negative saving record
-      await addSavings(-transferAmount, 'Withdrawal to Wallet', today);
-      
-      // Add to income
-      await addIncome(transferAmount, 'Transfer from Savings', today);
-    }
-  };
+  const handleGlobalTransfer = async () => { Swal.fire({title:'Temporarily unavailable',text:'Savings withdrawals are disabled until atomic transfer support is ready.',icon:'info'}); };
 
   // Calculate Daily Budget based on days remaining in the cycle
   let daysLeft = 1; // Default to 1 to avoid division by zero
@@ -107,7 +68,7 @@ export default function SummaryCards({ data, updateSalary, selectedMonth, addSav
 
   if (daysLeft < 1) daysLeft = 1;
 
-  const dailyLimit = remainingSalary / daysLeft;
+  const dailyLimit = Math.max(0,remainingSalary) / daysLeft;
 
   const expectedSalary = data?.expectedSalary || 0;
   const variance = salary - expectedSalary;
