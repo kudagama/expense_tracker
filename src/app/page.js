@@ -11,6 +11,7 @@ import FinanceOverview from '../components/FinanceOverview';
 import BudgetPlanner from '../components/BudgetPlanner';
 import WalletPlanner from '../components/WalletPlanner';
 import FinancialReports from '../components/FinancialReports';
+import TransactionLedger from '../components/TransactionLedger';
 import SummaryCards from '../components/SummaryCards';
 import ExpenseList from '../components/ExpenseList';
 import IncomeForm from '../components/IncomeForm';
@@ -72,6 +73,7 @@ export default function Home() {
 
       {section==='reports'&&<FinancialReports data={data} selectedMonth={selectedMonth} />}
       <div hidden={section!=='transactions'}>
+      <TransactionLedger data={data} selectedMonth={selectedMonth} />
 
       <SummaryCards 
         data={data?.month===selectedMonth?data:null} 
