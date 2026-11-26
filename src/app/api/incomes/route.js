@@ -3,6 +3,8 @@ import dbConnect from '@/lib/mongodb';
 import MonthData from '@/models/MonthData';
 import { getAuthUser } from '@/lib/auth';
 
+const valid=(month,amount,description,date)=>typeof month==='string'&&/^\d{4}-(0[1-9]|1[0-2])$/.test(month)&&typeof amount==='number'&&Number.isFinite(amount)&&amount>0&&amount<=1e9&&typeof description==='string'&&description.trim().length>0&&description.length<=500&&(!date||typeof date==='string'&&Number.isFinite(Date.parse(date)));
+
 export async function POST(request) {
   try {
     const user = await getAuthUser();
@@ -11,7 +13,7 @@ export async function POST(request) {
     const body = await request.json();
     const { month, amount, description, date } = body;
 
-    if (!month || !amount || !description) {
+    if (!valid(month,amount,description,date)) {
       return NextResponse.json({ error: 'Month, amount, and description are required' }, { status: 400 });
     }
 
@@ -45,7 +47,7 @@ export async function PUT(request) {
     const body = await request.json();
     const { month, incomeId, amount, description, date } = body;
 
-    if (!month || !incomeId || !amount || !description) {
+    if (!valid(month,amount,description,date) || !/^[a-f0-9]{24}$/i.test(incomeId)) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
