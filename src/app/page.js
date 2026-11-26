@@ -24,6 +24,7 @@ export default function Home() {
   const navigate=(id)=>{setSection(id);window.scrollTo({top:0,behavior:'instant'});};
   const {
     data,
+    refreshData,
     loading,
     selectedMonth,
     setSelectedMonth,
@@ -66,8 +67,8 @@ export default function Home() {
       <div hidden={section!=='home'}><FinanceOverview data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} addExpense={addExpense} />
       <div className={styles.shortcuts}>{[['transactions','⇄','Income & savings'],['wallets','▣','Manage wallets'],['budget','◎','Plan budget'],['reports','▥','View reports']].map(([id,icon,label])=><button key={id} onClick={()=>navigate(id)}><span>{icon}</span>{label}</button>)}</div></div>
 
-      <div hidden={section!=='wallets'}><WalletPlanner key={'wallet-'+selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
-      <div hidden={section!=='budget'}><BudgetPlanner key={selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
+      <div hidden={section!=='wallets'}><WalletPlanner onSaved={refreshData} key={'wallet-'+selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
+      <div hidden={section!=='budget'}><BudgetPlanner onSaved={refreshData} key={selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
 
       {section==='reports'&&<FinancialReports data={data} selectedMonth={selectedMonth} />}
       <div hidden={section!=='transactions'}>
