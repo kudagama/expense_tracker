@@ -22,7 +22,7 @@ export default function Header({ selectedMonth, setSelectedMonth }) {
           My Profile
         </Link>
       </div>
-      <h1 className={styles.title}>Expense Tracker</h1>
+      <h1 className={styles.title}>Pocketwise</h1>
       <div className={styles.monthInputContainer}>
         <div className={styles.titleGroup}>
           <p className={styles.subtitle}>{monthName} Overview</p>
@@ -31,7 +31,8 @@ export default function Header({ selectedMonth, setSelectedMonth }) {
         <input 
           type="month" 
           value={selectedMonth} 
-          onChange={(e) => setSelectedMonth(e.target.value)} 
+          aria-label="Salary cycle month"
+          onChange={(e) => { if(e.target.value) setSelectedMonth(e.target.value); }} 
           className={styles.input} 
         />
       </div>
