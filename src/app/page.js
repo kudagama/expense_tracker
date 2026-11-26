@@ -77,7 +77,7 @@ export default function Home() {
       <div hidden={section!=='wallets'}><WalletPlanner onSaved={refreshData} key={'wallet-'+selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
       <div hidden={section!=='budget'}><RecurringBills data={data} selectedMonth={selectedMonth}/><SavingsGoals data={data}/><BudgetPlanner onSaved={refreshData} key={selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
 
-      {section==='reports'&&<FinancialReports data={data} selectedMonth={selectedMonth} />}
+      {section==='reports'&&<FinancialReports data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} />}
       <div hidden={section!=='transactions'}>
       <TransactionLedger data={data} selectedMonth={selectedMonth} />
 
