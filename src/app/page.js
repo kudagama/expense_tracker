@@ -8,6 +8,7 @@ import { useExpenses } from '../hooks/useExpenses';
 import Header from '../components/Header';
 import PwaControls from '../components/PwaControls';
 import FinanceOverview from '../components/FinanceOverview';
+import SavingsGoals from '../components/SavingsGoals';
 import BudgetPlanner from '../components/BudgetPlanner';
 import WalletPlanner from '../components/WalletPlanner';
 import FinancialReports from '../components/FinancialReports';
@@ -69,7 +70,7 @@ export default function Home() {
       <div className={styles.shortcuts}>{[['transactions','⇄','Income & savings'],['wallets','▣','Manage wallets'],['budget','◎','Plan budget'],['reports','▥','View reports']].map(([id,icon,label])=><button key={id} onClick={()=>navigate(id)}><span>{icon}</span>{label}</button>)}</div></div>
 
       <div hidden={section!=='wallets'}><WalletPlanner onSaved={refreshData} key={'wallet-'+selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
-      <div hidden={section!=='budget'}><BudgetPlanner onSaved={refreshData} key={selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
+      <div hidden={section!=='budget'}><SavingsGoals data={data}/><BudgetPlanner onSaved={refreshData} key={selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} /></div>
 
       {section==='reports'&&<FinancialReports data={data} selectedMonth={selectedMonth} />}
       <div hidden={section!=='transactions'}>
