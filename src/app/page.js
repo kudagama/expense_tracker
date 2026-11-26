@@ -6,7 +6,6 @@ import { useExpenses } from '../hooks/useExpenses';
 import Header from '../components/Header';
 import FinanceOverview from '../components/FinanceOverview';
 import SummaryCards from '../components/SummaryCards';
-import ExpenseForm from '../components/ExpenseForm';
 import ExpenseList from '../components/ExpenseList';
 import IncomeForm from '../components/IncomeForm';
 import IncomeList from '../components/IncomeList';
@@ -65,7 +64,6 @@ export default function Home() {
         <div className={styles.leftColumn}>
           <IncomeForm addIncome={addIncome} />
           <SavingsForm addSavings={addSavings} />
-          <ExpenseForm addExpense={addExpense} />
         </div>
         
         <div className={styles.rightColumn}>
