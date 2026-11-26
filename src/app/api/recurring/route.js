@@ -1,0 +1,10 @@
+import {NextResponse} from 'next/server';
+import dbConnect from '@/lib/mongodb';
+import RecurringBill from '@/models/RecurringBill';
+import {getAuthUser} from '@/lib/auth';
+const reply=(v,status=200)=>NextResponse.json(v,{status,headers:{'Cache-Control':'no-store'}});
+const idValid=id=>typeof id==='string'&&/^[a-f0-9]{24}$/i.test(id);
+export async function GET(){try{const u=await getAuthUser();if(!u)return reply({error:'Unauthorized'},401);await dbConnect();return reply(await RecurringBill.find({userId:u.userId}).lean());}catch{return reply({error:'Load failed'},500);}}
+export async function POST(req){try{const u=await getAuthUser();if(!u)return reply({error:'Unauthorized'},401);const {name,amount,day}=await req.json();if(typeof name!=='string'||!name.trim()||name.length>100||typeof amount!=='number'||!Number.isFinite(amount)||amount<=0||amount>1e9||!Number.isInteger(day)||day<1||day>31)return reply({error:'Invalid bill'},400);await dbConnect();return reply(await RecurringBill.create({userId:u.userId,name:name.trim(),amount,day}),201);}catch{return reply({error:'Create failed'},500);}}
+export async function PATCH(req){try{const u=await getAuthUser();if(!u)return reply({error:'Unauthorized'},401);const {id,month,paid}=await req.json();if(!idValid(id)||typeof month!=='string'||!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)||typeof paid!=='boolean')return reply({error:'Invalid status'},400);await dbConnect();const b=await RecurringBill.findOneAndUpdate({_id:id,userId:u.userId},paid?{$addToSet:{paidMonths:month}}:{$pull:{paidMonths:month}},{new:true});return b?reply(b):reply({error:'Not found'},404);}catch{return reply({error:'Update failed'},500);}}
+export async function DELETE(req){try{const u=await getAuthUser();if(!u)return reply({error:'Unauthorized'},401);const id=new URL(req.url).searchParams.get('id');if(!idValid(id))return reply({error:'Invalid ID'},400);await dbConnect();const b=await RecurringBill.findOneAndDelete({_id:id,userId:u.userId});return b?reply({ok:true}):reply({error:'Not found'},404);}catch{return reply({error:'Delete failed'},500);}}
