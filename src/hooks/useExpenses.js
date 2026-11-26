@@ -38,10 +38,10 @@ export function useExpenses(initialMonth) {
     }
   };
 
-  const addExpense = async (amount, description, date) => {
+  const addExpense = async (amount, description, date, wallet) => {
     try {
       const targetMonth = getCycleMonth(date);
-      await expenseService.addExpense({ month: targetMonth, amount: Number(amount), description, date });
+      await expenseService.addExpense({ month: targetMonth, amount: Number(amount), description, date, wallet });
       toast.success('Expense added!');
       
       if (targetMonth !== selectedMonth) {
