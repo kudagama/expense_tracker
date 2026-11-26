@@ -231,6 +231,7 @@ export function useExpenses(initialMonth) {
 
   return {
     data,
+    refreshData: fetchData,
     loading,
     selectedMonth,
     setSelectedMonth,
