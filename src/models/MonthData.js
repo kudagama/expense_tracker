@@ -67,6 +67,11 @@ const MonthDataSchema = new mongoose.Schema({
     type: String, // Format: YYYY-MM-DD
     default: null
   },
+  budgetPlan: {
+    dailyLimit: { type: Number, default: 0 },
+    limits: { type: Map, of: Number, default: {} },
+    bills: [{ name: String, amount: Number, dueDate: String, paid: Boolean }]
+  },
   expenses: [ExpenseSchema],
   incomes: [IncomeSchema],
   savings: [SavingsSchema]
