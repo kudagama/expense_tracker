@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import styles from './page.module.css';
 import { useExpenses } from '../hooks/useExpenses';
 import Header from '../components/Header';
+import NotificationCenter from '../components/NotificationCenter';
 import PwaControls from '../components/PwaControls';
 import SmartInsights from '../components/SmartInsights';
 import FinanceOverview from '../components/FinanceOverview';
@@ -67,6 +68,7 @@ export default function Home() {
       />
 
       <PwaControls />
+      <NotificationCenter data={data} selectedMonth={selectedMonth}/>
       <div className={styles.pageTitle}><div><p>YOUR MONEY, YOUR FUTURE</p><h2>{sections.find(x=>x[0]===section)?.[1]}</h2></div>{loading&&<small role="status">Refreshing…</small>}</div>
       <div hidden={section!=='home'}><FinanceOverview data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} addExpense={addExpense} />
       <SmartInsights data={data} selectedMonth={selectedMonth}/>
