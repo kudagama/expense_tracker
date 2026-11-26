@@ -9,7 +9,8 @@ export async function POST(request) {
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await request.json();
-    const { month, amount, description, date } = body;
+    const { month, amount, description, date, wallet = 'unassigned' } = body;
+    if (!['cash','bank','savings','credit','unassigned'].includes(wallet) || !Number.isFinite(Number(amount)) || Number(amount)<=0) return NextResponse.json({error:'Invalid expense'},{status:400});
 
     if (!month || !amount || !description) {
       return NextResponse.json({ error: 'Month, amount, and description are required' }, { status: 400 });
@@ -23,6 +24,7 @@ export async function POST(request) {
     }
 
     monthData.expenses.push({
+      wallet,
       amount: Number(amount),
       description,
       date: date ? new Date(date) : new Date()
