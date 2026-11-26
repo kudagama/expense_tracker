@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const ExpenseSchema = new mongoose.Schema({
+  wallet: { type: String, enum: ['cash','bank','savings','credit','unassigned'], default: 'unassigned' },
   amount: {
     type: Number,
     required: true,
@@ -67,6 +68,7 @@ const MonthDataSchema = new mongoose.Schema({
     type: String, // Format: YYYY-MM-DD
     default: null
   },
+  walletPlan: { opening: { type: Map, of: Number, default: {} }, transfers: [{ from: String, to: String, amount: Number }] },
   budgetPlan: {
     dailyLimit: { type: Number, default: 0 },
     limits: { type: Map, of: Number, default: {} },
