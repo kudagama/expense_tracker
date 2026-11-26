@@ -68,7 +68,7 @@ const MonthDataSchema = new mongoose.Schema({
     type: String, // Format: YYYY-MM-DD
     default: null
   },
-  walletPlan: { opening: { type: Map, of: Number, default: {} }, transfers: [{ from: String, to: String, amount: Number }] },
+  walletPlan: { mode: {type:String,enum:['manual','automatic'],default:'manual'}, salaryWallet:{type:String,enum:['cash','bank'],default:'bank'}, opening: { type: Map, of: Number, default: {} }, transfers: [{ from: String, to: String, amount: Number }] },
   budgetPlan: {
     dailyLimit: { type: Number, default: 0 },
     limits: { type: Map, of: Number, default: {} },
