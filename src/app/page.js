@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import styles from './page.module.css';
 import { useExpenses } from '../hooks/useExpenses';
 import Header from '../components/Header';
+import FinanceOverview from '../components/FinanceOverview';
 import SummaryCards from '../components/SummaryCards';
 import ExpenseForm from '../components/ExpenseForm';
 import ExpenseList from '../components/ExpenseList';
@@ -49,6 +50,8 @@ export default function Home() {
         selectedMonth={selectedMonth} 
         setSelectedMonth={setSelectedMonth} 
       />
+
+      <FinanceOverview data={data} selectedMonth={selectedMonth} addExpense={addExpense} />
 
       <SummaryCards 
         data={data} 
