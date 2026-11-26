@@ -1,5 +1,5 @@
 'use client';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import styles from './FinanceOverview.module.css';
 import ExpenseForm from './ExpenseForm';
 
@@ -17,6 +17,9 @@ const groupFor = description => { const value=String(description||''); const pre
 const localKey = date => {const d = new Date(date);return Number.isNaN(d.getTime())?'':[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');};
 
 export default function FinanceOverview({data,selectedMonth,addExpense}) {
+ const dialog=useRef(null);
+ const openExpense=()=>dialog.current?.showModal();
+ const closeExpense=()=>dialog.current?.close();
  const [query,setQuery]=useState('');
  const expenses=useMemo(()=>data?.expenses||[],[data]);
  const income=(data?.incomes||[]).reduce((s,x)=>s+Number(x.amount||0),0);
@@ -43,9 +46,12 @@ export default function FinanceOverview({data,selectedMonth,addExpense}) {
   </div>
   <div className={styles.columns} id="add-expense">
    <div className={styles.panel}><h3>Where your money goes</h3><p>Estimated categories based on expense descriptions</p>{categories.length?categories.map(g=><div className={styles.category} key={g.label}><span>{g.icon} {g.label}</span><strong>{cash(g.total)}</strong><div className={styles.bar}><div style={{width:(g.total/spent*100)+'%',background:g.color}}/></div></div>):<div className={styles.empty}>Your spending breakdown appears after your first expense.</div>}</div>
-   <div className={styles.panel}><ExpenseForm addExpense={addExpense} /><div className={styles.budget}><span>Today vs daily guide</span><strong>{cash(todaySpend)} / {cash(dailyBudget)}</strong><div className={styles.bar}><div style={{width:(dailyBudget>0?Math.min(100,todaySpend/dailyBudget*100):todaySpend>0?100:0)+'%',background:todaySpend>dailyBudget?'#ef4444':'#8b5cf6'}}/></div></div></div>
+   <div className={styles.panel}><h3>Quick add expense</h3><p>Record your next purchase in seconds.</p><button type="button" className={styles.openExpense} onClick={openExpense}>＋ Add expense</button><div className={styles.budget}><span>Today vs daily guide</span><strong>{cash(todaySpend)} / {cash(dailyBudget)}</strong><div className={styles.bar}><div style={{width:(dailyBudget>0?Math.min(100,todaySpend/dailyBudget*100):todaySpend>0?100:0)+'%',background:todaySpend>dailyBudget?'#ef4444':'#8b5cf6'}}/></div></div></div>
   </div>
-  <a href="#add-expense" className={styles.floatingAdd} aria-label="Jump to add expense">＋ <span>Add expense</span></a>
+  <button type="button" onClick={openExpense} className={styles.floatingAdd} aria-label="Open add expense">＋ <span>Add expense</span></button>
+  <dialog ref={dialog} className={styles.sheet} aria-label="Add expense" onClick={e=>{if(e.target===e.currentTarget)closeExpense();}}>
+   <div className={styles.sheetContent}><div className={styles.sheetTop}><span className={styles.handle}/><button type="button" onClick={closeExpense} aria-label="Close expense form">×</button></div><ExpenseForm addExpense={addExpense} expenses={expenses} onSaved={closeExpense}/></div>
+  </dialog>
   <div className={styles.panel}><div className={styles.activityHead}><div><h3>Recent expenses</h3><p>Your latest recorded purchases</p></div><input aria-label="Search recent expenses" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search expenses…"/></div>{recent.length?recent.map(e=><div className={styles.item} key={e._id}><span className={styles.itemIcon}>{groupFor(e.description).icon}</span><span className={styles.itemText}><strong>{e.description}</strong><small>{new Date(e.date).toLocaleDateString('en-LK',{day:'numeric',month:'short',year:'numeric'})} · {groupFor(e.description).label}</small></span><b>− {cash(e.amount)}</b></div>):<div className={styles.empty}>No expenses found for this cycle.</div>}</div>
  </section>;
 }
