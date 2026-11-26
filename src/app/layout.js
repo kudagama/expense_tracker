@@ -6,9 +6,14 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "Expense Tracker",
+  title: "Pocketwise – Personal Finance",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, title: "Pocketwise", statusBarStyle: "black-translucent" },
+  icons: { icon: "/pwa-icon/192", apple: "/pwa-icon/180" },
   description: "Track your monthly salary, expenses, and daily spend limits",
 };
+
+export const viewport = { themeColor: '#10111b', width: 'device-width', initialScale: 1 };
 
 export default function RootLayout({ children }) {
   return (
