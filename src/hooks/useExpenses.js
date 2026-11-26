@@ -227,7 +227,14 @@ export function useExpenses(initialMonth) {
     }
   };
 
-  const transferSavingsToWallet = async () => { toast.error('Savings withdrawals are temporarily disabled for balance safety.'); return false; };
+  const transferSavingsToWallet = async (savingsId,amount) => {
+    if(data?.month!==selectedMonth)return false;
+    try {
+      const response=await fetch('/api/savings/withdraw',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({month:selectedMonth,savingsId,amount:Number(amount),requestId:crypto.randomUUID()})});
+      if(!response.ok)throw Error();
+      toast.success('Savings released to available balance');await fetchData();return true;
+    } catch {toast.error('Withdrawal failed or could not be confirmed. Refresh before retrying.');return false;}
+  };
 
   return {
     data,
