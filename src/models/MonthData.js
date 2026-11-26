@@ -74,6 +74,7 @@ const MonthDataSchema = new mongoose.Schema({
     limits: { type: Map, of: Number, default: {} },
     bills: [{ name: String, amount: Number, dueDate: String, paid: Boolean }]
   },
+  withdrawals: [{ requestId: String, savingsId: mongoose.Schema.Types.ObjectId, amount: Number, date: Date }],
   expenses: [ExpenseSchema],
   incomes: [IncomeSchema],
   savings: [SavingsSchema]
