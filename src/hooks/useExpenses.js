@@ -87,10 +87,8 @@ export function useExpenses(initialMonth) {
       const targetMonth = getCycleMonth(date);
       
       if (targetMonth !== selectedMonth) {
-        await expenseService.deleteExpense({ month: selectedMonth, expenseId });
-        await expenseService.addExpense({ month: targetMonth, amount: Number(amount), description, date });
-        toast.success(`Expense moved to ${targetMonth}!`);
-        setSelectedMonth(targetMonth);
+        toast.error('Moving records between salary cycles is temporarily disabled.');
+        return false;
       } else {
         await expenseService.updateExpense({ month: selectedMonth, expenseId, description, amount: Number(amount), date });
         toast.success('Expense updated!');
@@ -152,10 +150,8 @@ export function useExpenses(initialMonth) {
       const targetMonth = getCycleMonth(date);
       
       if (targetMonth !== selectedMonth) {
-        await expenseService.deleteIncome({ month: selectedMonth, incomeId });
-        await expenseService.addIncome({ month: targetMonth, amount: Number(amount), description, date });
-        toast.success(`Income moved to ${targetMonth}!`);
-        setSelectedMonth(targetMonth);
+        toast.error('Moving records between salary cycles is temporarily disabled.');
+        return false;
       } else {
         await expenseService.updateIncome({ month: selectedMonth, incomeId, description, amount: Number(amount), date });
         toast.success('Income updated!');
@@ -217,10 +213,8 @@ export function useExpenses(initialMonth) {
       const targetMonth = getCycleMonth(date);
       
       if (targetMonth !== selectedMonth) {
-        await expenseService.deleteSavings({ month: selectedMonth, savingsId });
-        await expenseService.addSavings({ month: targetMonth, amount: Number(amount), description, date });
-        toast.success(`Savings moved to ${targetMonth}!`);
-        setSelectedMonth(targetMonth);
+        toast.error('Moving records between salary cycles is temporarily disabled.');
+        return false;
       } else {
         await expenseService.updateSavings({ month: selectedMonth, savingsId, description, amount: Number(amount), date });
         toast.success('Savings updated!');
@@ -233,47 +227,7 @@ export function useExpenses(initialMonth) {
     }
   };
 
-  const transferSavingsToWallet = async (savingsId, transferAmount) => {
-    try {
-      const saving = data?.savings?.find(s => s._id === savingsId);
-      if (!saving || transferAmount <= 0 || transferAmount > saving.amount) {
-        toast.error('Invalid transfer amount');
-        return false;
-      }
-
-      const newAmount = saving.amount - transferAmount;
-
-      // Update or delete the savings record
-      if (newAmount === 0) {
-        await expenseService.deleteSavings({ month: selectedMonth, savingsId });
-      } else {
-        await expenseService.updateSavings({ 
-          month: selectedMonth, 
-          savingsId, 
-          description: saving.description, 
-          amount: newAmount, 
-          date: saving.date 
-        });
-      }
-
-      // Add as income to the wallet
-      const today = new Date().toISOString().split('T')[0];
-      await expenseService.addIncome({ 
-        month: selectedMonth, 
-        amount: transferAmount, 
-        description: `From Savings: ${saving.description}`, 
-        date: today 
-      });
-
-      toast.success(`Transferred Rs. ${transferAmount} to Wallet!`);
-      fetchData();
-      return true;
-    } catch (error) {
-      console.error('Transfer failed:', error);
-      toast.error('Transfer failed');
-      return false;
-    }
-  };
+  const transferSavingsToWallet = async () => { toast.error('Savings withdrawals are temporarily disabled for balance safety.'); return false; };
 
   return {
     data,
