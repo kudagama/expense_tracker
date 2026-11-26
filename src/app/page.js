@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import FinanceOverview from '../components/FinanceOverview';
 import BudgetPlanner from '../components/BudgetPlanner';
 import WalletPlanner from '../components/WalletPlanner';
+import FinancialReports from '../components/FinancialReports';
 import SummaryCards from '../components/SummaryCards';
 import ExpenseList from '../components/ExpenseList';
 import IncomeForm from '../components/IncomeForm';
@@ -56,6 +57,8 @@ export default function Home() {
 
       <WalletPlanner key={'wallet-'+selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} />
       <BudgetPlanner key={selectedMonth} data={data?.month===selectedMonth?data:null} selectedMonth={selectedMonth} />
+
+      <FinancialReports data={data} selectedMonth={selectedMonth} />
 
       <SummaryCards 
         data={data} 
